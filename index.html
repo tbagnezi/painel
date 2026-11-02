@@ -43,6 +43,9 @@ main{flex:1;padding:28px;max-width:1440px;margin:0 auto;width:100%}
 .card h3{font-size:14.5px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
 .item{background:#fff;border-left:4px solid var(--accent);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;align-items:center}
 .item small{color:var(--mut);display:block}
+.item.arrastando{opacity:.65;box-shadow:0 6px 18px rgba(0,0,0,.18);position:relative;z-index:5}
+.grip{cursor:grab;color:var(--mut);touch-action:none;user-select:none;-webkit-user-select:none;padding:6px 4px;font-size:15px;line-height:1;letter-spacing:-3px;flex-shrink:0}
+.grip:active{cursor:grabbing}
 .item .x{border:0;background:none;color:var(--mut);cursor:pointer;font-size:16px}
 .total{display:flex;justify-content:space-between;font-weight:700;margin-top:12px;padding-top:12px;border-top:1px solid #d9ded8}
 .vazio{color:var(--mut);font-size:12.5px}
@@ -306,7 +309,12 @@ async function boot() {
 async function login() {
   $('loginErro').textContent = '';
   const { data, error } = await sb.auth.signInWithPassword({ email:$('email').value.trim(), password:$('senha').value });
-  if (error) { $('loginErro').textContent = 'E-mail ou senha incorretos.'; return; }
+  if (error) {
+    const m = String(error.message || '');
+    $('loginErro').textContent = SUPABASE_URL.includes('COLE_AQUI') ? 'Este arquivo está sem a URL do Supabase: use a versão preenchida.'
+      : /invalid login|invalid credentials/i.test(m) ? 'E-mail ou senha incorretos.' : 'Não foi possível entrar: ' + m;
+    return;
+  }
   $('login').classList.add('hide');
   entrar(data.user);
 }
@@ -539,13 +547,47 @@ async function addTarefa() {
 }
 async function delTarefa(id) { await sb.from('tarefas').delete().eq('id', id); telaHome(); }
 
+// ---- arrastar para reordenar os lançamentos de uma coluna ----
+let DRAG = null;
+function gripDown(ev) {
+  ev.preventDefault(); ev.stopPropagation();
+  const item = ev.currentTarget.closest('.item');
+  DRAG = { item, card: item.parentElement, moved: false };
+  item.classList.add('arrastando');
+  document.addEventListener('pointermove', gripMove);
+  document.addEventListener('pointerup', gripUp);
+  document.addEventListener('pointercancel', gripUp);
+}
+function gripMove(ev) {
+  if (!DRAG) return;
+  const { item, card } = DRAG, todos = [...card.querySelectorAll('.item[data-id]')], idx = todos.indexOf(item);
+  // posição desejada: quantos dos outros itens estão acima do ponteiro. Move os vizinhos, não o item arrastado.
+  const t = todos.filter(s => s !== item && ev.clientY > s.getBoundingClientRect().top + s.getBoundingClientRect().height / 2).length;
+  if (t === idx) return;
+  if (t < idx) { let n = item; todos.slice(t, idx).forEach(x => { n.after(x); n = x; }); }
+  else todos.slice(idx + 1, t + 1).forEach(x => card.insertBefore(x, item));
+  DRAG.moved = true;
+}
+async function gripUp() {
+  document.removeEventListener('pointermove', gripMove);
+  document.removeEventListener('pointerup', gripUp);
+  document.removeEventListener('pointercancel', gripUp);
+  if (!DRAG) return;
+  const { item, card, moved } = DRAG; DRAG = null; item.classList.remove('arrastando');
+  if (!moved) return;
+  const ids = [...card.querySelectorAll('.item[data-id]')].map(x => x.dataset.id);
+  const rs = await Promise.all(ids.map((id, i) => sb.from('lancamentos').update({ ordem: i + 1 }).eq('id', id)));
+  if (rs.some(r => r.error)) aviso('Não foi possível salvar a nova ordem.');
+  rotear();
+}
+
 // ============ MÓDULO (lançamentos) ============
 async function telaModulo(m) {
   if (m.id === 'valentina') return telaValentina(m);
   $('titulo').textContent = m.nome;
   const outro = m.nome.split('/')[1] || 'Outro', chave = chaveMes();
   const [l, p, c] = await Promise.all([
-    sb.from('lancamentos').select('*').eq('modulo_id', m.id).eq('mes', chave).order('criado_em'),
+    sb.from('lancamentos').select('*').eq('modulo_id', m.id).eq('mes', chave).order('ordem').order('criado_em'),
     sb.from('meses_pagos').select('*').eq('modulo_id', m.id).eq('mes', chave).maybeSingle(),
     ehAdmin() ? sb.from('config').select('*') : Promise.resolve({ data: [] })
   ]);
@@ -559,7 +601,7 @@ async function telaModulo(m) {
     return `<div class="card"><h3>Lançamentos ${esc(nome)}</h3>
       ${lista.map(i => {
         const info = [i.grupo ? `Dividido ${pctPag(i)}/${Math.round((100 - pctPag(i)) * 100) / 100}, total ${brl(i.valor_total)}${i.pago_por ? ', pago por ' + (i.pago_por === 'terence' ? 'Terence' : esc(outro)) : ''}` : '', i.parcelas ? `Parcela ${i.parcela}/${i.parcelas}` : ''].filter(Boolean).join('. ');
-        return `<div class="item ${editar ? 'edt' : ''}" ${editar ? `onclick="abrirLancamento('${m.id}','${i.id}')" title="Clique para editar"` : ''}><div>${esc(i.nome)}${info ? `<small>${info}</small>` : ''}</div><div>${brl(i.valor)}${editar ? ` <button class="x" onclick="event.stopPropagation();excluir('${m.id}','${i.id}','${i.grupo || ''}')" title="Excluir">×</button>` : ''}</div></div>`;
+        return `<div class="item ${editar ? 'edt' : ''}" data-id="${i.id}" ${editar ? `onclick="abrirLancamento('${m.id}','${i.id}')" title="Clique para editar"` : ''}><div style="display:flex;align-items:center;gap:8px;min-width:0">${editar ? '<span class="grip" title="Arraste para reordenar" onclick="event.stopPropagation()" onpointerdown="gripDown(event)">⋮⋮</span>' : ''}<div>${esc(i.nome)}${info ? `<small>${info}</small>` : ''}</div></div><div>${brl(i.valor)}${editar ? ` <button class="x" onclick="event.stopPropagation();excluir('${m.id}','${i.id}','${i.grupo || ''}')" title="Excluir">×</button>` : ''}</div></div>`;
       }).join('') || '<p class="vazio">Nenhum lançamento neste mês.</p>'}
       <div class="total"><span>Subtotal</span><span>${brl(tot)}</span></div></div>`;
   };
@@ -582,14 +624,14 @@ const CONCILIA = ['elo', 'ana']; // módulos com divisão Ambos e acerto do mês
 function saldoElo(itens, outro) {
   const soma = l => l.reduce((a, i) => a + Number(i.valor), 0);
   const pagoT = itens.filter(i => i.grupo && i.pago_por === 'terence'), pagoE = itens.filter(i => i.grupo && i.pago_por === 'outro');
-  const net = acertoNet(itens);
+  const net = acertoNet(itens), rep = itens.filter(ehRepasse);
   const [txt, val, cor] = net > 0.005 ? [`${esc(outro)} deve transferir para Terence`, brl(net), 'var(--ok)']
     : net < -0.005 ? [`Terence deve transferir para ${esc(outro)}`, brl(-net), 'var(--bad)']
     : ['Tudo equilibrado, vocês estão quites', 'Quites', 'var(--txt)'];
   const semPagador = itens.some(i => i.grupo && !i.pago_por);
   return `<div class="card" style="margin-top:20px"><h3>Acerto do mês</h3>
     <div class="lin"><span>${txt}</span><b style="font-size:20px;color:${cor}">${val}</b></div>
-    <small class="vazio">Divididos pagos por Terence: ${brl(soma(pagoT))}. Divididos pagos por ${esc(outro)}: ${brl(soma(pagoE))}.${semPagador ? ' Há lançamentos divididos sem pagador, que não entram no acerto.' : ''}</small></div>`;
+    <small class="vazio">Divididos pagos por Terence: ${brl(soma(pagoT))}. Divididos pagos por ${esc(outro)}: ${brl(soma(pagoE))}.${rep.length ? ` Gastos de ${esc(outro)} a repassar: ${brl(soma(rep))}.` : ''}${semPagador ? ' Há lançamentos divididos sem pagador, que não entram no acerto.' : ''}</small></div>`;
 }
 function pctPag(i) {
   if (i.pct_pagador != null) return Number(i.pct_pagador);
@@ -650,7 +692,7 @@ async function salvarLancamento() {
   if (isNaN(pct) || pct < 0 || pct > 100) return aviso('A porcentagem de quem pagou deve ficar entre 0 e 100.');
   let linhas = [];
   if (orig) {
-    linhas = montarLinhas(mid, orig.mes, nome, valor, dono, { criado_em: orig.criado_em, serie: orig.serie || null, parcela: orig.parcela || null, parcelas: orig.parcelas || null }, pct);
+    linhas = montarLinhas(mid, orig.mes, nome, valor, dono, { criado_em: orig.criado_em, ordem: orig.ordem ?? null, serie: orig.serie || null, parcela: orig.parcela || null, parcelas: orig.parcelas || null }, pct);
   } else {
     const n = Math.max(1, Math.min(36, parseInt($('lRep').value) || 1)), serie = n > 1 ? crypto.randomUUID() : null;
     for (let i = 0; i < n; i++) {
@@ -1204,13 +1246,14 @@ async function delLink(id) {
 
 // ============ EXTRATO POR WHATSAPP (só admin) ============
 const normFone = v => { const d = String(v || '').replace(/\D/g, ''); return d && d.length <= 11 ? '55' + d : d; };
+const ehRepasse = i => !i.grupo && i.dono === 'outro';   // gasto individual dela: Terence paga no cartão e ela repassa, então entra no acerto
 function acertoNet(itens) {
   const soma = l => l.reduce((a, i) => a + Number(i.valor), 0), g = itens.filter(i => i.grupo);
-  return Math.round((soma(g.filter(i => i.pago_por === 'terence' && i.dono === 'outro')) - soma(g.filter(i => i.pago_por === 'outro' && i.dono === 'terence'))) * 100) / 100;
+  return Math.round((soma(g.filter(i => i.pago_por === 'terence' && i.dono === 'outro')) + soma(itens.filter(ehRepasse)) - soma(g.filter(i => i.pago_por === 'outro' && i.dono === 'terence'))) * 100) / 100;
 }
 function montarExtrato(m) {
   const outro = m.nome.split('/')[1] || 'Outro', itens = S.itens || [], mes = `${MESES[S.mes.mes]}/${S.mes.ano}`;
-  const dela = itens.filter(i => i.dono === 'outro'), div = dela.filter(i => i.grupo), ind = dela.filter(i => !i.grupo);
+  const dela = itens.filter(i => i.dono === 'outro'), div = dela.filter(i => i.grupo), ind = dela.filter(ehRepasse);
   const net = acertoNet(itens), pix = S.cfg?.pix;
   let msg = `📋 *Extrato ${outro} — ${mes}* 📋\n\n`;
   if (!div.length && !ind.length) msg += `Sem lançamentos no período.\n\n`;
@@ -1223,7 +1266,7 @@ function montarExtrato(m) {
     msg += `\n`;
   }
   if (ind.length) {
-    msg += `*Despesas individuais (não entram no acerto)*\n`;
+    msg += `*Despesas individuais*\n`;
     ind.forEach(i => { msg += `• ${i.nome} — ${brl(i.valor)}\n`; });
     msg += `\n`;
   }
