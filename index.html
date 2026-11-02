@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel</title>
+<style>
+:root{--bg:#e2e7e1;--card:#f3f5f2;--dark:#1b1b1d;--accent:#7c4dff;--nav1:#a68bff;--nav2:#3c2480;--tint:#ece6ff;--tintx:#4a2fb3;--txt:#111;--mut:#6e7570;--ok:#4caf6a;--bad:#d9605f}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:var(--bg);color:var(--txt);min-height:100vh;font-size:14.5px}
+button,input,select{font:inherit}
+button{color:inherit}
+input,select{color:var(--txt);color-scheme:light}
+input::placeholder{color:#8a918b}
+.hide{display:none!important}
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.box{background:var(--card);border-radius:28px;padding:32px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
+.box h1{font-size:20px}
+input,select{border:1px solid #cfd5ce;background:#fff;border-radius:12px;padding:11px 14px;width:100%}
+.btn{background:var(--dark);color:#fff;border:0;border-radius:40px;padding:11px 20px;font-weight:600;cursor:pointer}
+.btn.sec{background:transparent;color:var(--txt);border:1px solid #cfd5ce}
+.erro{color:var(--bad);font-size:11.5px;min-height:16px}
+/* app */
+#app{display:flex;min-height:100vh}
+nav{background:linear-gradient(180deg,var(--nav1),var(--nav2));width:68px;padding:16px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:sticky;top:0;height:100vh}
+nav button{width:44px;height:44px;border-radius:14px;border:0;background:transparent;color:rgba(255,255,255,.75);display:grid;place-items:center;cursor:pointer}
+nav button:hover{background:rgba(255,255,255,.15)}
+nav button.on{background:rgba(255,255,255,.28);color:#fff}
+.tit{display:inline-flex;align-items:center;gap:8px}
+.cores{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.sw{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;padding:0}
+.sw.on{box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--txt)}
+.sw.custom{position:relative;overflow:hidden;background:conic-gradient(#f44,#fc4,#4d4,#4dd,#44f,#f4f,#f44)}
+.sw.custom input{opacity:0;position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer}
+
+main{flex:1;padding:28px;max-width:1440px;margin:0 auto;width:100%}
+.topo{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:12px;flex-wrap:wrap}
+.topo h2{font-size:21.5px}
+.quem{font-size:11.5px;color:var(--mut);display:flex;gap:10px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.card{background:var(--card);border-radius:28px;padding:24px}
+.card h3{font-size:14.5px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.item{background:#fff;border-left:4px solid var(--accent);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.item small{color:var(--mut);display:block}
+.item .x{border:0;background:none;color:var(--mut);cursor:pointer;font-size:16px}
+.total{display:flex;justify-content:space-between;font-weight:700;margin-top:12px;padding-top:12px;border-top:1px solid #d9ded8}
+.vazio{color:var(--mut);font-size:12.5px}
+.meses{display:flex;align-items:center;gap:10px}
+.meses button{border:0;background:rgba(0,0,0,.06);border-radius:50%;width:34px;height:34px;cursor:pointer}
+.pill{padding:4px 12px;border-radius:40px;font-size:11px;font-weight:700}
+.pill.pago{background:#dff3e4;color:var(--ok)}.pill.aberto{background:#f9e0e0;color:var(--bad)}
+.form{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:20px}
+@media(max-width:700px){main{padding:16px}.form{grid-template-columns:1fr 1fr}}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:10px 8px;text-align:center;border-bottom:1px solid #d9ded8}
+th:first-child,td:first-child{text-align:left}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.hero{margin-bottom:20px}.hero h1{font-size:27px}.hero p{color:var(--mut);margin-top:4px}
+.home{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}@media(max-width:1000px){.home{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}.col .hero{margin-bottom:0}
+.mods{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.mod{cursor:pointer}.mod:hover{background:#fff}
+.lin{display:flex;justify-content:space-between;padding:6px 0;font-size:12.5px}
+.sem{display:grid;grid-template-columns:repeat(7,minmax(96px,1fr));gap:8px;overflow-x:auto}
+.dia{background:#fff;border-radius:16px;padding:10px;min-height:150px;cursor:pointer;display:flex;flex-direction:column;gap:6px;border:2px solid transparent}
+.dia b{font-size:11px;color:var(--mut);font-weight:600}.dia>span{font-size:18px;font-weight:700}
+.dia.hoje>span{color:var(--accent)}.dia.sel{border-color:var(--accent)}
+.chip{display:flex;justify-content:space-between;gap:4px;background:var(--tint);color:var(--tintx);border-radius:8px;padding:4px 7px;font-size:11px;line-height:1.25}
+.chip button{border:0;background:none;opacity:.6;cursor:pointer;line-height:1;padding:0 2px}
+.addrow{display:flex;gap:8px;margin-top:12px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal small{color:var(--mut);font-size:11px;padding:4px 0}
+.cal button{position:relative;aspect-ratio:1;border:0;background:transparent;border-radius:50%;font-size:12.5px;cursor:pointer}
+.cal button:hover{background:rgba(0,0,0,.06)}
+.cal button.hoje{background:var(--accent);color:#fff;font-weight:700}
+.cal button.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.cal em{position:absolute;left:50%;bottom:4px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#e5484d}
+.cal button.hoje em{background:#fff}
+.dir h3{font-size:12.5px}
+.dir .meses>span{font-size:11.5px!important;min-width:100px!important}
+.dir .meses button{width:28px;height:28px;font-size:12.5px}
+.dir .cal small{font-size:10.5px}
+.dir .cal button{font-size:11.5px}
+.dir input{font-size:11.5px;padding:8px 12px}
+.dir .btn{font-size:11.5px;padding:8px 16px}
+.dir .item{font-size:11.5px;padding:10px 12px}
+.dir .item small{font-size:11px}
+.dir .vazio{font-size:11.5px}
+.lk{text-decoration:none;color:inherit}.lk:hover{background:var(--tint)}
+.fch{display:inline-flex;align-items:center;background:#fff;border-radius:40px}
+.fch>button{border:0;background:none;padding:7px 12px;cursor:pointer;font-size:12.5px;border-radius:40px}
+.fch>button.fx{padding:7px 10px 7px 0;opacity:.6}
+.fch.on{background:var(--accent);color:#fff}
+.fab{position:fixed;right:28px;bottom:28px;width:58px;height:58px;border-radius:50%;border:0;background:linear-gradient(180deg,var(--nav1),var(--nav2));color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.25);z-index:40}
+.fab:hover{transform:scale(1.06)}
+.item.edt{cursor:pointer}.item.edt:hover{background:var(--tint)}
+.nf{font-size:9.5px;letter-spacing:.06em;font-weight:600;color:var(--mut);border:1px solid #cfd5ce;border-radius:4px;padding:1px 5px}
+/* ajustes de layout: raios em escala, sem sobreposição, semana mais alta */
+.card{border-radius:18px;padding:22px 24px}
+.box{border-radius:18px}
+.soon{border-radius:18px}
+.item{border-radius:10px}
+.card h3{gap:10px;flex-wrap:wrap;row-gap:6px}
+.card h3>span:first-child{min-width:0}
+.tit{min-width:0}
+.pill{white-space:nowrap;flex-shrink:0}
+.mods{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.sem{grid-template-columns:repeat(7,minmax(118px,1fr));gap:10px;padding-bottom:4px}
+.dia{border-radius:12px;padding:12px;min-height:190px;min-width:0}
+.chip{border-radius:6px;padding:5px 8px;align-items:flex-start;min-width:0}
+.chip>span{min-width:0;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.chip button{flex-shrink:0}
+.item>div:first-child{min-width:0;overflow-wrap:anywhere}
+.item>div:last-child{flex-shrink:0}
+.st{font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.st-p{background:#fff2d6;color:#8a6100}.st-a{background:#dff3e4;color:#2f7d4a}.st-c{background:#f9e0e0;color:#b04545}
+.motivo{color:#b04545!important}
+.card h3 .meses{flex-wrap:wrap;justify-content:flex-end}
+.motivo-box{background:#f9e0e0;color:#8f3535;border-radius:10px;padding:10px 12px;font-size:13px}
+.gc{display:grid;grid-template-columns:236px minmax(0,1fr);gap:20px;align-items:start}
+.gc-side{display:flex;flex-direction:column;gap:20px;position:sticky;top:20px}
+.gc-criar{align-self:flex-start;padding:12px 24px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.gc-mini{background:var(--card);border-radius:18px;padding:12px}
+.gc-minih{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-bottom:6px}
+.gc-minih button{border:0;background:none;cursor:pointer;font-size:16px;padding:2px 8px}
+.gc-agt{font-size:12.5px;font-weight:700;margin-bottom:6px}
+.gc-ag{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.gc-ag label{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0}
+.gc-ag .x{opacity:.5}
+.gc-main{background:var(--card);border-radius:18px;padding:16px;min-width:0}
+.gc-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.gc-bar h2{font-size:18px;font-weight:600;margin-right:auto}
+.gc-seg{display:inline-flex;border:1px solid #cfd5ce;border-radius:40px;overflow:hidden;background:#fff}
+.gc-seg button{border:0;background:none;padding:7px 14px;cursor:pointer;font-size:12.5px}
+.gc-seg button.on{background:var(--tint);color:var(--tintx);font-weight:700}
+.gc-wrap{overflow-x:auto}
+.gc-mes{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid #d9ded8;border-left:1px solid #d9ded8;min-width:640px}
+.gc-mes .h{padding:6px;font-size:11px;color:var(--mut);text-align:center;border-right:1px solid #d9ded8;border-bottom:1px solid #d9ded8;background:#fff}
+.gc-cel{min-height:116px;border-right:1px solid #d9ded8;border-bottom:1px solid #d9ded8;padding:4px;cursor:pointer;background:#fff;min-width:0;display:flex;flex-direction:column;gap:2px}
+.gc-cel:hover{background:#fafbf9}.gc-cel.fora{background:#f4f6f3}.gc-cel.fora .gc-n{color:var(--mut)}
+.gc-n{font-size:12px;min-width:24px;height:24px;border-radius:12px;padding:0 6px;display:grid;place-items:center;align-self:flex-start}
+.gc-n.hoje{background:var(--accent);color:#fff;font-weight:700}
+.gc-ev{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:1px 6px;font-size:11.5px;line-height:1.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;background:transparent}
+.gc-ev:hover{background:rgba(0,0,0,.06)}
+.gc-ev i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.gc-mais{border:0;background:none;font-size:11.5px;color:var(--mut);text-align:left;padding:1px 6px;cursor:pointer}
+.gc-grade{min-width:640px}
+.gc-hd{display:grid;grid-template-columns:48px repeat(var(--n),minmax(0,1fr));border-top:1px solid #d9ded8;background:#fff}
+.gc-dh{text-align:center;padding:6px 0;cursor:pointer;border-left:1px solid #d9ded8}
+.gc-dh small{display:block;font-size:11px;color:var(--mut)}
+.gc-dh b{display:inline-grid;place-items:center;min-width:30px;height:30px;border-radius:15px;font-size:16px;font-weight:600}
+.gc-dh.hoje b{background:var(--accent);color:#fff}
+.gc-ad{border-bottom:1px solid #d9ded8}
+.gc-lbl{font-size:10px;color:var(--mut);text-align:right;padding:6px 6px 0 0}
+.gc-dt{border-left:1px solid #d9ded8;padding:3px;display:flex;flex-direction:column;gap:2px;min-height:26px;cursor:pointer}
+.gc-tg{max-height:600px;overflow-y:auto;background:#fff}
+.gc-body{display:grid;grid-template-columns:48px repeat(var(--n),minmax(0,1fr))}
+.gc-horas div{height:48px;font-size:10px;color:var(--mut);text-align:right;padding-right:6px;position:relative;top:-6px}
+.gc-col{position:relative;height:1152px;border-left:1px solid #d9ded8;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,#e6eae4 47px,#e6eae4 48px);cursor:pointer}
+.gc-t{position:absolute;border-radius:6px;border-left:3px solid;padding:2px 6px;font-size:11.5px;line-height:1.3;overflow:hidden;cursor:pointer;color:var(--txt)}
+.gc-agora{position:absolute;left:0;right:0;height:2px;background:#e5484d;z-index:3;pointer-events:none}
+.fab.gc-fab{display:none}
+.bn-row{display:flex;flex-wrap:wrap;gap:10px}
+.bn{display:flex;align-items:center;gap:10px;border-radius:14px;padding:10px 12px;border-left:5px solid;flex:1 1 170px;max-width:270px;min-width:0}
+.bn>div{min-width:0}.bn b{font-size:13px;display:block}.bn small{display:block;color:var(--mut);font-size:11px}
+.bn.feito{opacity:.55}.bn.feito b{text-decoration:line-through}
+.bn .ck{margin-left:auto;flex-shrink:0;width:26px;height:26px;border-radius:50%;border:2px solid;background:transparent;cursor:pointer;display:grid;place-items:center;font-size:13px;color:#fff}
+.bnl{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #e6eae4;font-size:13px}
+.bnl i{width:12px;height:12px;border-radius:50%;flex-shrink:0}.bnl>div{flex:1;min-width:0}.bnl small{display:block;color:var(--mut);font-size:11px}
+.bnl button{border:0;background:none;cursor:pointer;font-size:12px;padding:4px 8px;border-radius:8px;color:var(--tintx)}
+.bnd{display:flex;gap:6px;flex-wrap:wrap}.bnd label{display:flex;align-items:center;gap:4px;font-size:12px;border:1px solid #cfd5ce;border-radius:20px;padding:5px 10px;cursor:pointer;background:#fff}
+@media(max-width:900px){.gc{grid-template-columns:1fr}.gc-side{display:none}.fab.gc-fab{display:grid}}
+.evrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.soon{border:2px dashed #c3cac2;border-radius:28px;padding:24px;color:var(--mut)}
+</style>
+</head>
+<body>
+
+<section id="login" class="hide">
+  <div class="box">
+    <h1>Entrar</h1>
+    <input id="email" type="email" placeholder="E-mail" autocomplete="username">
+    <input id="senha" type="password" placeholder="Senha" autocomplete="current-password">
+    <div class="erro" id="loginErro"></div>
+    <button class="btn" onclick="login()">Entrar</button>
+  </div>
+</section>
+
+<div id="app" class="hide">
+  <nav id="menu"></nav>
+  <main>
+    <div class="topo">
+      <h2 id="titulo"></h2>
+      <div class="quem"><span id="quem"></span><button class="btn sec" onclick="sair()">Sair</button></div>
+    </div>
+    <div id="conteudo"></div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script>
+// ============ CONFIGURAÇÃO (Supabase > Project Settings > API) ============
+const SUPABASE_URL = 'https://urccqopviggwnduckeut.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_vds8BbFzoAtPm0xDHBUkGg_9jLk1r9J';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Rede de segurança: qualquer consulta que volte com erro avisa na tela (nenhuma falha fica silenciosa).
+(function () {
+  let p = sb.from('profiles').select('*'); while (p && !Object.prototype.hasOwnProperty.call(p, 'then') && !Object.prototype.hasOwnProperty.call(Object.getPrototypeOf(p) || {}, 'then')) p = Object.getPrototypeOf(p);
+  const proto = Object.prototype.hasOwnProperty.call(p, 'then') ? p : Object.getPrototypeOf(p), orig = proto.then;
+  proto.then = function (ok, bad) {
+    return orig.call(this, r => { if (r && r.error) erroBanco(r.error); return ok ? ok(r) : r; }, bad);
+  };
+})();
+function erroBanco(e) {
+  const m = String(e.message || e);
+  if (/jwt|token/i.test(m)) { aviso('Sua sessão expirou. Entre novamente.'); setTimeout(sair, 1800); return; }
+  aviso('Erro ao falar com o banco: ' + m);
+}
+window.addEventListener('unhandledrejection', e => { aviso('Algo deu errado: ' + (e.reason?.message || e.reason)); });
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const brl = n => Number(n).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+const hoje = new Date();
+const S = { user:null, perfil:null, modulos:[], perm:{}, mes:{ano:hoje.getFullYear(), mes:hoje.getMonth()} };
+const mesKey = (a, m0) => `${a}-${String(m0 + 1).padStart(2, '0')}-01`;   // chave do mês: data do dia 1 (2026-10-01)
+const parseMes = k => { const [a, m] = k.split('-').map(Number); return [a, m - 1]; };   // [ano, mês 0-11]
+const chaveMes = () => mesKey(S.mes.ano, S.mes.mes);
+const ehAdmin = () => !!S.perfil?.is_admin;
+const podeVer = m => ehAdmin() || !!S.perm[m]?.pode_ver;
+const podeLancar = m => ehAdmin() || (!!S.perm[m]?.pode_ver && !!S.perm[m]?.pode_lancar);
+
+// ============ AVISOS E CONFIRMAÇÃO (sem janelas do navegador) ============
+function confirmar(msg, ok = 'Excluir') {
+  return new Promise(res => {
+    const d = document.createElement('div');
+    d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:100;padding:20px';
+    d.innerHTML = `<div class="box" style="max-width:340px"><p>${esc(msg)}</p><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" id="cNao">Cancelar</button><button class="btn" id="cSim">${esc(ok)}</button></div></div>`;
+    document.body.appendChild(d);
+    const fim = v => { d.remove(); res(v); };
+    d.querySelector('#cSim').onclick = () => fim(true);
+    d.querySelector('#cNao').onclick = () => fim(false);
+    d.onclick = e => { if (e.target === d) fim(false); };
+  });
+}
+function aviso(msg) {
+  document.querySelectorAll('.toast-av').forEach(x => x.remove());
+  const t = document.createElement('div');
+  t.className = 'toast-av';
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 18px;border-radius:40px;font-size:13px;z-index:101;max-width:90%';
+  document.body.appendChild(t); setTimeout(() => t.remove(), 5000);
+}
+
+// ============ ÍCONES E TEMA DE CORES ============
+const ICONS = {
+  home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  cfg: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  elo: '<path d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10z"/>',
+  valentina: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/>',
+  ana: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>',
+  links: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/>',
+  rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  work: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+  cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+  pasta: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'
+};
+const ico = (k, s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${ICONS[k] || ICONS.pasta}</svg>`;
+
+const TEMAS = [{n:'Roxo',c:'#7c4dff'},{n:'Azul',c:'#2f80ed'},{n:'Verde',c:'#2e9e6b'},{n:'Amarelo',c:'#e0a800'},{n:'Laranja',c:'#ee7a2c'},{n:'Rosa',c:'#e0558f'},{n:'Grafite',c:'#5b6470'}];
+function hexHsl(hex) {
+  const r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+  const mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx - mn;
+  let h = 0; if (d) { h = mx === r ? ((g-b)/d) % 6 : mx === g ? (b-r)/d + 2 : (r-g)/d + 4; h = Math.round(h*60); if (h < 0) h += 360; }
+  const l = (mx+mn)/2, s = d ? d/(1-Math.abs(2*l-1)) : 0;
+  return [h, Math.round(Math.min(s, .8)*100)];
+}
+function temaSalvo() { try { return localStorage.getItem('tema'); } catch (e) { return null; } }
+function aplicarTema(hex) {
+  const [h, s] = hexHsl(hex), st = document.documentElement.style;
+  st.setProperty('--nav1', `hsl(${h} ${s}% 64%)`);
+  st.setProperty('--nav2', `hsl(${h} ${s}% 26%)`);
+  st.setProperty('--accent', `hsl(${h} ${s}% 46%)`);
+  st.setProperty('--tint', `hsl(${h} ${s}% 92%)`);
+  st.setProperty('--tintx', `hsl(${h} ${s}% 28%)`);
+  try { localStorage.setItem('tema', hex); } catch (e) {}
+}
+function blocoCores() {
+  const cur = temaSalvo() || '#7c4dff';
+  return `<div class="card"><h3>Cores</h3>
+    <p class="vazio" style="margin-bottom:14px">Escolha a cor do menu lateral e dos destaques. O menu vai do tom claro ao tom escuro da cor escolhida.</p>
+    <div class="cores">${TEMAS.map(t => `<button class="sw ${t.c === cur ? 'on' : ''}" style="background:${t.c}" title="${t.n}" onclick="trocarCor('${t.c}')"></button>`).join('')}
+    <label class="sw custom" title="Outra cor"><input type="color" value="${cur}" onchange="trocarCor(this.value)"></label></div></div>`;
+}
+function trocarCor(c) { aplicarTema(c); telaConfig(); }
+aplicarTema(temaSalvo() || '#7c4dff');
+
+// ============ SESSÃO ============
+async function boot() {
+  const { data:{ session } } = await sb.auth.getSession();
+  session ? entrar(session.user) : $('login').classList.remove('hide');
+}
+async function login() {
+  $('loginErro').textContent = '';
+  const { data, error } = await sb.auth.signInWithPassword({ email:$('email').value.trim(), password:$('senha').value });
+  if (error) { $('loginErro').textContent = 'E-mail ou senha incorretos.'; return; }
+  $('login').classList.add('hide');
+  entrar(data.user);
+}
+async function sair() { await sb.auth.signOut(); location.hash = ''; location.reload(); }
+
+async function entrar(user) {
+  S.user = user;
+  const [p, m, pe] = await Promise.all([
+    sb.from('profiles').select('*').eq('id', user.id).single(),
+    sb.from('modulos').select('*').order('ordem'),
+    sb.from('permissoes').select('*').eq('user_id', user.id)
+  ]);
+  if (p.error || !p.data || m.error) {
+    $('app').classList.remove('hide'); $('menu').classList.add('hide');
+    $('conteudo').innerHTML = `<p class="vazio">Não foi possível carregar seu perfil${p.error ? ': ' + esc(p.error.message) : '. Peça ao administrador para conferir o seu cadastro'}.</p><button class="btn sec" onclick="sair()">Sair</button>`;
+    return;
+  }
+  S.perfil = p.data;
+  S.perm = Object.fromEntries((pe.data || []).map(x => [x.modulo_id, x]));
+  S.modulos = (m.data || []).filter(x => podeVer(x.id));
+  $('quem').textContent = S.perfil?.nome || user.email;
+  $('app').classList.remove('hide');
+  montarMenu();
+  if (!location.hash) location.hash = ehAdmin() ? '#home' : (S.modulos[0] ? '#m/' + S.modulos[0].id : '#home');
+  rotear();
+}
+
+// ============ MENU E ROTAS ============
+function montarMenu() {
+  $('menu').classList.toggle('hide', !ehAdmin() && S.modulos.length <= 1);
+  let h = '';
+  if (ehAdmin()) h += `<button data-r="home" title="Início">${ico('home')}</button>`;
+  if (ehAdmin()) h += `<button data-r="cal" title="Calendário">${ico('cal')}</button>`;
+  S.modulos.forEach(m => h += `<button data-r="m/${m.id}" title="${esc(m.nome)}">${ico(m.id)}</button>`);
+  if (ehAdmin()) h += `<button data-r="work" title="Work">${ico('work')}</button>`;
+  if (ehAdmin()) h += `<button data-r="links" title="Links">${ico('links')}</button>`;
+  if (ehAdmin()) h += `<button class="fim" data-r="cfg" title="Configurações">${ico('cfg')}</button>`;
+  $('menu').innerHTML = h;
+  $('menu').onclick = e => { const b = e.target.closest('button'); if (b) location.hash = '#' + b.dataset.r; };
+}
+window.addEventListener('hashchange', () => S.user && rotear());
+
+function rotear() {
+  const r = location.hash.slice(1) || 'home';
+  document.querySelectorAll('#menu button').forEach(b => b.classList.toggle('on', b.dataset.r === r));
+  if (r === 'cal' && ehAdmin()) return telaCalendario();
+  if (r === 'work' && ehAdmin()) return telaWork();
+  if (r === 'links' && ehAdmin()) return telaLinks();
+  if (r === 'cfg' && ehAdmin()) return telaConfig();
+  if (r.startsWith('m/')) {
+    const m = S.modulos.find(x => x.id === r.slice(2));
+    if (m) return telaModulo(m);
+  }
+  if (ehAdmin() || !S.modulos.length) return telaHome();
+  location.hash = '#m/' + S.modulos[0].id;
+}
+
+// ============ HOME ============
+const DIAS = ['dom','seg','ter','qua','qui','sex','sáb'];
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const inicioSemana = d => { const x = new Date(d); x.setDate(x.getDate() - x.getDay()); x.setHours(0,0,0,0); return x; };
+const longo = d => d.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
+
+async function telaHome() {
+  $('titulo').textContent = 'Início';
+  if (!ehAdmin() && !S.modulos.length) { $('conteudo').innerHTML = `<p class="vazio">Você ainda não tem acesso a nenhum módulo. Peça a liberação ao administrador.</p>`; return; }
+  S.home ??= { ini: inicioSemana(new Date()), sel: iso(new Date()) };
+  const h = S.home, hojeIso = iso(new Date());
+  const mk = mesKey(new Date().getFullYear(), new Date().getMonth());
+  const hojeK0 = iso(new Date());
+  const [ev, ta, lc, pg, bn, bd, bf] = await Promise.all([
+    sb.from('eventos').select('*').order('hora'),
+    sb.from('tarefas').select('*').order('criado_em'),
+    sb.from('lancamentos').select('*').eq('mes', mk),
+    sb.from('meses_pagos').select('*').eq('mes', mk),
+    sb.from('banners').select('*'), sb.from('banner_datas').select('*'), sb.from('banner_feitos').select('*').eq('data', hojeK0)
+  ]);
+  const hojeHtml = bnHojeHtml(bn.data || [], bd.data || [], bf.data || [], hojeK0);
+  const eventos = ev.data || [], tarefas = ta.data || [], lancs = lc.data || [], pagos = pg.data || [];
+  const doDia = k => eventos.filter(e => !e.oculto && e.data <= k && (e.data_fim || e.data) >= k);
+  const dias = [...Array(7)].map((_, i) => { const d = new Date(h.ini); d.setDate(d.getDate() + i); return d; });
+  const fim = dias[6], mes3 = d => MESES[d.getMonth()].slice(0, 3).toLowerCase();
+  const rotulo = `${dias[0].getDate()} ${mes3(dias[0])} a ${fim.getDate()} ${mes3(fim)} ${fim.getFullYear()}`;
+  const hr = new Date().getHours(), saud = hr < 12 ? 'Bom dia' : hr < 18 ? 'Boa tarde' : 'Boa noite';
+  const nHoje = doDia(hojeIso).length, selD = new Date(h.sel + 'T00:00:00');
+  const plural = (n, a, b) => `${n} ${n === 1 ? a : b}`;
+
+  h.mesCal ??= { ano: selD.getFullYear(), mes: selD.getMonth() };
+  const mc = h.mesCal, nDias = new Date(mc.ano, mc.mes + 1, 0).getDate();
+  const celulas = [...Array(new Date(mc.ano, mc.mes, 1).getDay()).fill(null), ...Array.from({ length: nDias }, (_, i) => i + 1)];
+  const prox = eventos.filter(e => !e.oculto && (e.data_fim || e.data) >= hojeIso).sort((a, b) => (a.data + (a.hora || '')).localeCompare(b.data + (b.hora || ''))).slice(0, 5);
+  const calHtml = `<div class="card"><h3><span>Calendário</span>
+    <span class="meses"><button onclick="calMes(-1)" title="Mês anterior">‹</button><span style="font-size:12.5px;font-weight:600;min-width:120px;text-align:center">${MESES[mc.mes]} ${mc.ano}</span><button onclick="calMes(1)" title="Próximo mês">›</button></span></h3>
+    <div class="cal">${DIAS.map(d => `<small>${d}</small>`).join('')}${celulas.map(n => {
+      if (!n) return '<i></i>';
+      const k = iso(new Date(mc.ano, mc.mes, n));
+      return `<button class="${k === hojeIso ? 'hoje' : ''} ${k === h.sel ? 'sel' : ''}" onclick="selDia('${k}')">${n}${doDia(k).length ? '<em></em>' : ''}</button>`;
+    }).join('')}</div>
+    <div class="addrow"><input id="eTitulo" placeholder="Novo evento em ${selD.getDate()} ${mes3(selD)}" onkeydown="if(event.key==='Enter')addEvento()"><input id="eHora" type="time" style="max-width:110px"><button class="btn" onclick="addEvento()" title="Adicionar evento">+</button></div>
+    <h3 style="margin:20px 0 10px">Próximos eventos</h3>
+    ${prox.map(e => { const d = new Date(e.data + 'T00:00:00'); return `<div class="item" style="cursor:pointer" onclick="selDia('${e.data}')"><div>${esc(e.titulo)}<small>${DIAS[d.getDay()]}, ${d.getDate()} ${mes3(d)}${e.hora ? ' às ' + esc(e.hora) : ''}</small></div></div>`; }).join('') || '<p class="vazio">Nenhum evento à frente.</p>'}</div>`;
+
+  const soma = (m, dono) => lancs.filter(i => i.modulo_id === m && i.dono === dono).reduce((a, i) => a + Number(i.valor), 0);
+  const modHtml = S.modulos.map(m => {
+    const outro = m.nome.split('/')[1] || 'Outro', pago = pagos.some(p => p.modulo_id === m.id && p.pago), n = lancs.filter(i => i.modulo_id === m.id).length;
+    if (m.id === 'valentina') {
+      const v = lancs.filter(i => i.modulo_id === 'valentina'), pe = v.filter(i => stDe(i) === 'pendente'), ct = v.filter(i => stDe(i) === 'contestado');
+      return `<div class="card mod" onclick="location.hash='#m/${m.id}'"><h3><span class="tit">${ico(m.id, 18)}${esc(m.nome)}</span><span class="pill ${pago ? 'pago' : 'aberto'}">${pago ? 'Pago' : 'Em aberto'}</span></h3>
+      <div class="lin"><span>A pagar</span><b>${brl(somaV(v.filter(i => stDe(i) !== 'contestado')))}</b></div>
+      <div class="lin"><span>Para analisar</span><b>${pe.length ? `<span class="st st-p">${pe.length}</span>` : '0'}</b></div>
+      <small class="vazio">${ct.length ? plural(ct.length, 'contestada', 'contestadas') + ', ' : ''}${plural(n, 'despesa', 'despesas')} em ${MESES[new Date().getMonth()].toLowerCase()}</small></div>`;
+    }
+    return `<div class="card mod" onclick="location.hash='#m/${m.id}'"><h3><span class="tit">${ico(m.id, 18)}${esc(m.nome)}</span><span class="pill ${pago ? 'pago' : 'aberto'}">${pago ? 'Pago' : 'Em aberto'}</span></h3>
+      <div class="lin"><span>Terence</span><b>${brl(soma(m.id, 'terence'))}</b></div>
+      <div class="lin"><span>${esc(outro)}</span><b>${brl(soma(m.id, 'outro'))}</b></div>
+      <small class="vazio">${plural(n, 'lançamento', 'lançamentos')} em ${MESES[new Date().getMonth()].toLowerCase()}</small></div>`;
+  }).join('');
+
+  $('conteudo').innerHTML = `
+    <div class="home">
+      <div class="col">
+        <div class="hero"><h1>${saud}, ${esc(S.perfil?.nome || '')}</h1>
+          <p>${longo(new Date())}. ${plural(nHoje, 'evento', 'eventos')} hoje e ${plural(tarefas.length, 'tarefa pendente', 'tarefas pendentes')}.</p></div>
+        ${hojeHtml}
+        <div class="card"><h3><span>Semana</span>
+          <span class="meses"><button onclick="semana(-1)" title="Semana anterior">‹</button><span style="font-size:12.5px;font-weight:600">${rotulo}</span><button onclick="semana(1)" title="Próxima semana">›</button>
+          <button class="btn sec" style="padding:6px 14px" onclick="semana(0)">Hoje</button></span></h3>
+          <div class="sem">${dias.map(d => { const k = iso(d); return `<div class="dia ${k === hojeIso ? 'hoje' : ''} ${k === h.sel ? 'sel' : ''}" onclick="selDia('${k}')">
+            <b>${DIAS[d.getDay()]}</b><span>${d.getDate()}</span>
+            ${doDia(k).map(e => `<div class="chip"><span>${e.hora ? esc(e.hora) + ' ' : ''}${esc(e.titulo)}</span><button onclick="event.stopPropagation();delEvento('${e.id}')" title="Excluir evento">×</button></div>`).join('')}</div>`; }).join('')}</div></div>
+        <div class="grid mods">${modHtml}</div>
+        <div class="card"><h3>Tarefas <button class="btn sec" style="padding:2px 12px;font-size:18px;line-height:1.2" onclick="toggleTarefa()" title="Nova tarefa">+</button></h3>
+          <div id="tForm" class="addrow hide" style="margin:0 0 14px"><input id="tNova" placeholder="O que precisa ser feito?" onkeydown="if(event.key==='Enter')addTarefa();if(event.key==='Escape')toggleTarefa()"><button class="btn" onclick="addTarefa()">Adicionar</button></div>
+          ${tarefas.map(t => `<div class="item"><div>${esc(t.texto)}</div><button class="x" onclick="delTarefa('${t.id}')" title="Concluir e excluir">×</button></div>`).join('') || '<p class="vazio">Nenhuma tarefa. Clique no + para adicionar.</p>'}</div>
+      </div>
+      <div class="col dir">${calHtml}</div>
+    </div>`;
+}
+// ============ BANNERS DO "HOJE" ============
+const bnDiasTxt = d => !d || !d.length ? 'só em datas avulsas' : d.length === 7 ? 'todo dia' : (d.join() === '1,2,3,4,5' ? 'seg a sex' : [...d].sort().map(i => DIAS[i]).join(', '));
+function bnHojeHtml(banners, datas, feitos, hojeK) {
+  const wd = new Date(hojeK + 'T00:00:00').getDay(), itens = [];
+  datas.filter(x => x.data === hojeK).forEach(x => { const b = banners.find(y => y.id === x.banner_id); if (b) itens.push({ b, hora: x.hora || b.hora, obs: x.obs }); });
+  banners.filter(b => (b.dias || []).includes(wd) && !itens.some(i => i.b.id === b.id)).forEach(b => itens.push({ b, hora: b.hora, obs: null }));
+  itens.sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99') || a.b.nome.localeCompare(b.b.nome));
+  const corpo = itens.map(({ b, hora, obs }) => {
+    const f = feitos.some(x => x.banner_id === b.id);
+    return `<div class="bn ${f ? 'feito' : ''}" style="background:${hexRgba(b.cor, .14)};border-color:${b.cor}"><div><b>${esc(b.nome)}</b><small>${[hora, obs].filter(Boolean).map(esc).join(' · ') || 'o dia todo'}</small></div><button class="ck" style="border-color:${b.cor};${f ? 'background:' + b.cor : 'color:transparent'}" onclick="bnFeito('${b.id}',${f})" title="${f ? 'Desmarcar' : 'Marcar como feito'}">✓</button></div>`;
+  }).join('');
+  return `<div class="card"><h3><span>HOJE</span><button class="btn sec" style="padding:2px 12px;font-size:18px;line-height:1.2" onclick="abrirBanners()" title="Cadastrar banners">+</button></h3>${corpo ? `<div class="bn-row">${corpo}</div>` : '<p class="vazio">Nada fixo para hoje. Clique no + para cadastrar suas rotinas.</p>'}</div>`;
+}
+async function bnFeito(id, ja) {
+  const k = iso(new Date());
+  const { error } = ja ? await sb.from('banner_feitos').delete().eq('banner_id', id).eq('data', k) : await sb.from('banner_feitos').insert({ banner_id: id, data: k });
+  if (error) return aviso('Não foi possível atualizar: ' + error.message);
+  telaHome();
+}
+async function abrirBanners() {
+  const [b, d] = await Promise.all([sb.from('banners').select('*').order('nome'), sb.from('banner_datas').select('*').order('data')]);
+  if (b.error || d.error) return aviso('Não foi possível carregar: ' + (b.error || d.error).message);
+  S.bn = { banners: b.data || [], datas: d.data || [] };
+  const hojeK = iso(new Date()), futuras = S.bn.datas.filter(x => x.data >= hojeK);
+  modalCal('dlgBn', `<h3 style="font-size:17px">Banners do HOJE</h3>
+    <small class="vazio">Cadastre uma vez. Os com dias da semana aparecem sozinhos; os genéricos (sem dias) você agenda numa data.</small>
+    <div>${S.bn.banners.map(x => `<div class="bnl"><i style="background:${x.cor}"></i><div>${esc(x.nome)}<small>${bnDiasTxt(x.dias)}${x.hora ? ' · ' + esc(x.hora) : ''}</small></div><button onclick="dialogAgendar('${x.id}')">Agendar data</button><button onclick="dialogBanner('${x.id}')">Editar</button></div>`).join('') || '<p class="vazio">Nenhum banner ainda.</p>'}</div>
+    ${futuras.length ? `<div><div class="gc-agt">Datas agendadas</div>${futuras.map(x => { const b = S.bn.banners.find(y => y.id === x.banner_id); return `<div class="bnl"><i style="background:${b?.cor || '#999'}"></i><div>${esc(b?.nome || '?')}<small>${fmtData(x.data)}${x.hora ? ' às ' + esc(x.hora) : ''}${x.obs ? ' · ' + esc(x.obs) : ''}</small></div><button onclick="delBnData('${x.id}')" title="Remover data">×</button></div>`; }).join('')}</div>` : ''}
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="$('dlgBn').remove()">Fechar</button><button class="btn" onclick="dialogBanner()">+ Novo banner</button></div>`, 480);
+}
+function dialogBanner(id) {
+  const b = id ? S.bn.banners.find(x => x.id === id) : null; S.bnDlg = { id };
+  modalCal('dlgBn2', `<h3 style="font-size:17px">${b ? 'Editar banner' : 'Novo banner'}</h3>
+    <input id="bnN" placeholder="Nome (ex.: Academia, Jogo do Grêmio)" value="${esc(b?.nome || '')}">
+    <div class="evrow"><label class="vazio">Cor<input id="bnC" type="color" value="${b?.cor || '#7c4dff'}" style="margin-top:6px;height:42px;padding:4px"></label><label class="vazio">Horário (opcional)<input id="bnH" type="time" value="${b?.hora || ''}" style="margin-top:6px"></label></div>
+    <div class="vazio">Dias da semana <small>(deixe vazio para um banner genérico, agendado por data)</small></div>
+    <div class="bnd">${DIAS.map((n, i) => `<label><input type="checkbox" class="bnDia" value="${i}" ${(b?.dias || []).includes(i) ? 'checked' : ''}>${n}</label>`).join('')}</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button class="btn sec" onclick="$('dlgBn2').remove()">Cancelar</button>${b ? '<button class="btn sec" onclick="excluirBanner()">Excluir</button>' : ''}<button class="btn" onclick="salvarBanner()">Salvar</button></div>`, 420);
+  $('bnN').focus();
+}
+async function salvarBanner() {
+  const { id } = S.bnDlg, nome = $('bnN').value.trim();
+  if (!nome) return aviso('Dê um nome ao banner.');
+  const p = { nome, cor: $('bnC').value, hora: $('bnH').value || null, dias: [...document.querySelectorAll('.bnDia:checked')].map(x => Number(x.value)) };
+  const r = id ? await sb.from('banners').update(p).eq('id', id) : await sb.from('banners').insert(p);
+  if (r.error) return aviso('Não foi possível salvar: ' + r.error.message);
+  $('dlgBn2')?.remove(); await telaHome(); abrirBanners();
+}
+async function excluirBanner() {
+  if (!await confirmar('Excluir este banner e as datas agendadas dele?')) return;
+  const { error } = await sb.from('banners').delete().eq('id', S.bnDlg.id);
+  if (error) return aviso('Não foi possível excluir: ' + error.message);
+  $('dlgBn2')?.remove(); await telaHome(); abrirBanners();
+}
+function dialogAgendar(id) {
+  const b = S.bn.banners.find(x => x.id === id); S.bnAg = { id };
+  modalCal('dlgBn2', `<h3 style="font-size:17px">Agendar: ${esc(b.nome)}</h3>
+    <div class="evrow"><label class="vazio">Data<input id="agD" type="date" value="${S.home?.sel || iso(new Date())}" style="margin-top:6px"></label><label class="vazio">Horário<input id="agH" type="time" value="${b.hora || ''}" style="margin-top:6px"></label></div>
+    <input id="agO" placeholder="Observação (ex.: Grêmio x Inter, Arena)">
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="$('dlgBn2').remove()">Cancelar</button><button class="btn" onclick="salvarAgenda()">Agendar</button></div>`, 420);
+  $('agO').focus();
+}
+async function salvarAgenda() {
+  const data = $('agD').value; if (!data) return aviso('Informe a data.');
+  const { error } = await sb.from('banner_datas').insert({ banner_id: S.bnAg.id, data, hora: $('agH').value || null, obs: $('agO').value.trim() || null });
+  if (error) return aviso('Não foi possível agendar: ' + error.message);
+  $('dlgBn2')?.remove(); await telaHome(); abrirBanners();
+}
+async function delBnData(id) {
+  const { error } = await sb.from('banner_datas').delete().eq('id', id);
+  if (error) return aviso('Não foi possível remover: ' + error.message);
+  await telaHome(); abrirBanners();
+}
+function semana(d) {
+  if (d === 0) S.home = { ini: inicioSemana(new Date()), sel: iso(new Date()) };
+  else { const n = new Date(S.home.ini); n.setDate(n.getDate() + 7 * d); S.home.ini = n; S.home.sel = iso(n); S.home.mesCal = null; }
+  telaHome();
+}
+function calMes(d) { const m = S.home.mesCal, n = new Date(m.ano, m.mes + d, 1); S.home.mesCal = { ano: n.getFullYear(), mes: n.getMonth() }; telaHome(); }
+function selDia(k) { const d = new Date(k + 'T00:00:00'); S.home.sel = k; S.home.ini = inicioSemana(d); S.home.mesCal = null; telaHome(); }
+async function addEvento() {
+  const titulo = $('eTitulo').value.trim(); if (!titulo) return;
+  await sb.from('eventos').insert({ titulo, data: S.home.sel, hora: $('eHora').value || null });
+  telaHome();
+}
+async function delEvento(id) { await sb.from('eventos').delete().eq('id', id); telaHome(); }
+function toggleTarefa() { const f = $('tForm'); f.classList.toggle('hide'); if (!f.classList.contains('hide')) $('tNova').focus(); }
+async function addTarefa() {
+  const texto = $('tNova').value.trim(); if (!texto) return;
+  await sb.from('tarefas').insert({ texto });
+  await telaHome(); $('tNova').focus();
+}
+async function delTarefa(id) { await sb.from('tarefas').delete().eq('id', id); telaHome(); }
+
+// ============ MÓDULO (lançamentos) ============
+async function telaModulo(m) {
+  if (m.id === 'valentina') return telaValentina(m);
+  $('titulo').textContent = m.nome;
+  const outro = m.nome.split('/')[1] || 'Outro', chave = chaveMes();
+  const [l, p, c] = await Promise.all([
+    sb.from('lancamentos').select('*').eq('modulo_id', m.id).eq('mes', chave).order('criado_em'),
+    sb.from('meses_pagos').select('*').eq('modulo_id', m.id).eq('mes', chave).maybeSingle(),
+    ehAdmin() ? sb.from('config').select('*') : Promise.resolve({ data: [] })
+  ]);
+  S.cfg = Object.fromEntries((c.data || []).map(x => [x.chave, x.valor]));
+  const itens = l.data || [], pago = !!p.data?.pago;
+  S.itens = itens;
+  const editar = podeLancar(m.id) && (ehAdmin() || !pago);
+  const coluna = (dono, nome) => {
+    const lista = itens.filter(i => i.dono === dono);
+    const tot = lista.reduce((a, i) => a + Number(i.valor), 0);
+    return `<div class="card"><h3>Lançamentos ${esc(nome)}</h3>
+      ${lista.map(i => {
+        const info = [i.grupo ? `Dividido ${pctPag(i)}/${Math.round((100 - pctPag(i)) * 100) / 100}, total ${brl(i.valor_total)}${i.pago_por ? ', pago por ' + (i.pago_por === 'terence' ? 'Terence' : esc(outro)) : ''}` : '', i.parcelas ? `Parcela ${i.parcela}/${i.parcelas}` : ''].filter(Boolean).join('. ');
+        return `<div class="item ${editar ? 'edt' : ''}" ${editar ? `onclick="abrirLancamento('${m.id}','${i.id}')" title="Clique para editar"` : ''}><div>${esc(i.nome)}${info ? `<small>${info}</small>` : ''}</div><div>${brl(i.valor)}${editar ? ` <button class="x" onclick="event.stopPropagation();excluir('${m.id}','${i.id}','${i.grupo || ''}')" title="Excluir">×</button>` : ''}</div></div>`;
+      }).join('') || '<p class="vazio">Nenhum lançamento neste mês.</p>'}
+      <div class="total"><span>Subtotal</span><span>${brl(tot)}</span></div></div>`;
+  };
+  $('conteudo').innerHTML = `
+    <div class="topo">
+      <div class="meses"><button onclick="mudarMes(-1)">‹</button><strong>${MESES[S.mes.mes]}/${S.mes.ano}</strong><button onclick="mudarMes(1)">›</button>
+        <span class="pill ${pago ? 'pago' : 'aberto'}">${pago ? 'Pago' : 'Em aberto'}</span></div>
+      ${ehAdmin() ? `<div style="display:flex;gap:8px;flex-wrap:wrap">${CONCILIA.includes(m.id) ? `<button class="btn sec" onclick="abrirExtrato('${m.id}')">Enviar extrato</button>` : ''}<button class="btn sec" onclick="alternarPago('${m.id}',${!pago})">${pago ? 'Reabrir mês' : 'Confirmar pagamento'}</button></div>` : ''}
+    </div>
+    ${!editar && pago ? '<p class="vazio" style="margin-bottom:16px">Mês pago: lançamentos travados.</p>' : ''}
+    <div class="grid">${coluna('terence', 'Terence')}${coluna('outro', outro)}</div>${CONCILIA.includes(m.id) ? saldoElo(itens, outro) : ''}
+    ${editar ? `<button class="fab" onclick="abrirLancamento('${m.id}')" title="Novo lançamento">${ico('rocket', 26)}</button>` : ''}`;
+}
+function mudarMes(d) {
+  let a = S.mes.ano, n = S.mes.mes + d;
+  if (n < 0) { n = 11; a--; } if (n > 11) { n = 0; a++; }
+  S.mes = { ano:a, mes:n }; rotear();
+}
+const CONCILIA = ['elo', 'ana']; // módulos com divisão Ambos e acerto do mês
+function saldoElo(itens, outro) {
+  const soma = l => l.reduce((a, i) => a + Number(i.valor), 0);
+  const pagoT = itens.filter(i => i.grupo && i.pago_por === 'terence'), pagoE = itens.filter(i => i.grupo && i.pago_por === 'outro');
+  const net = acertoNet(itens);
+  const [txt, val, cor] = net > 0.005 ? [`${esc(outro)} deve transferir para Terence`, brl(net), 'var(--ok)']
+    : net < -0.005 ? [`Terence deve transferir para ${esc(outro)}`, brl(-net), 'var(--bad)']
+    : ['Tudo equilibrado, vocês estão quites', 'Quites', 'var(--txt)'];
+  const semPagador = itens.some(i => i.grupo && !i.pago_por);
+  return `<div class="card" style="margin-top:20px"><h3>Acerto do mês</h3>
+    <div class="lin"><span>${txt}</span><b style="font-size:20px;color:${cor}">${val}</b></div>
+    <small class="vazio">Divididos pagos por Terence: ${brl(soma(pagoT))}. Divididos pagos por ${esc(outro)}: ${brl(soma(pagoE))}.${semPagador ? ' Há lançamentos divididos sem pagador, que não entram no acerto.' : ''}</small></div>`;
+}
+function pctPag(i) {
+  if (i.pct_pagador != null) return Number(i.pct_pagador);
+  if (!i.pago_por) return 50;
+  const p = i.dono === i.pago_por ? i.valor / i.valor_total : 1 - i.valor / i.valor_total;
+  return Math.round(p * 1000) / 10;
+}
+function prevSplit() {
+  const dono = $('lDono').value, ambos = dono.startsWith('ambos');
+  $('lPctBox')?.classList.toggle('hide', !ambos);
+  const el = $('lPrev'); if (!el) return;
+  if (!ambos) { el.textContent = ''; return; }
+  const v = parseFloat($('lValor').value), pct = parseFloat($('lPct').value), o = S.edit.outro, t = dono === 'ambos_t';
+  if (isNaN(pct) || pct < 0 || pct > 100) { el.textContent = 'Informe a porcentagem de quem pagou, de 0 a 100.'; return; }
+  const pagador = t ? 'Terence' : o, deve = t ? o : 'Terence', rest = Math.round((100 - pct) * 100) / 100;
+  if (isNaN(v)) { el.textContent = `Divisão ${pct}/${rest}: ${pagador} fica com ${pct}% e ${deve} com ${rest}%.`; return; }
+  const c = Math.round(v * 100), cp = Math.round(c * pct / 100);
+  el.textContent = `${pct}/${rest}: ${pagador} ${brl(cp / 100)} e ${deve} ${brl((c - cp) / 100)}. ${deve} deve ${brl((c - cp) / 100)} a ${pagador}.`;
+}
+function montarLinhas(mid, anoMes, nome, valor, dono, extra, pct = 50) {
+  const base = { modulo_id: mid, nome, mes: anoMes, ...extra };
+  if (!dono.startsWith('ambos')) return [{ ...base, valor, dono }];
+  const pp = dono === 'ambos_t' ? 'terence' : 'outro', g = crypto.randomUUID();
+  const c = Math.round(valor * 100), cPag = Math.round(c * pct / 100), cOut = c - cPag;
+  const tc = pp === 'terence' ? cPag : cOut, oc = c - tc;
+  return [{ ...base, valor: tc / 100, dono: 'terence', grupo: g, valor_total: valor, pago_por: pp, pct_pagador: pct },
+          { ...base, valor: oc / 100, dono: 'outro', grupo: g, valor_total: valor, pago_por: pp, pct_pagador: pct }];
+}
+function fecharLanc() { $('dlgLanc')?.remove(); }
+function abrirLancamento(mid, id) {
+  const m = S.modulos.find(x => x.id === mid), outro = m.nome.split('/')[1] || 'Outro';
+  const orig = id ? S.itens.find(i => i.id === id) : null;
+  let nome = '', valor = '', dono = 'terence', pct = 50;
+  if (orig) {
+    nome = orig.nome;
+    if (orig.grupo) { valor = orig.valor_total; dono = orig.pago_por === 'outro' ? 'ambos_e' : 'ambos_t'; pct = pctPag(orig); } else { valor = orig.valor; dono = orig.dono; }
+  }
+  S.edit = { mid, orig, outro };
+  const d = document.createElement('div'); d.id = 'dlgLanc';
+  d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:100;padding:20px;overflow:auto';
+  d.innerHTML = `<div class="box" style="max-width:420px"><h3 style="font-size:17px">${orig ? 'Editar lançamento' : 'Novo lançamento em ' + MESES[S.mes.mes] + '/' + S.mes.ano}</h3>
+    <input id="lNome" placeholder="Descrição" value="${esc(nome)}">
+    <input id="lValor" type="number" step="0.01" placeholder="Valor" value="${valor}" oninput="prevSplit()">
+    <div style="display:flex;gap:8px"><select id="lDono" onchange="prevSplit()" style="flex:1"><option value="terence">Terence</option><option value="outro">${esc(outro)}</option>${CONCILIA.includes(mid) ? `<option value="ambos_t">Ambos: Terence pagou</option><option value="ambos_e">Ambos: ${esc(outro)} pagou</option>` : ''}</select><div id="lPctBox" class="hide" style="width:104px"><input id="lPct" type="number" min="0" max="100" step="0.01" value="${pct}" oninput="prevSplit()" placeholder="% quem pagou" title="Porcentagem de quem pagou"></div></div>
+    <p id="lPrev" class="vazio"></p>
+    ${orig ? '<small class="vazio">A alteração vale só para este mês, os demais meses não mudam.</small>'
+      : `<label class="vazio">Repetir por quantos meses?<input id="lRep" type="number" min="1" max="36" value="1" style="margin-top:6px"></label>
+         <small class="vazio">1 = só este mês. 2 = este mês e o seguinte, e assim por diante. Cada mês fica independente e pode ser editado depois.</small>`}
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="fecharLanc()">Cancelar</button><button class="btn" onclick="salvarLancamento()">${orig ? 'Salvar' : 'Lançar'}</button></div></div>`;
+  document.body.appendChild(d);
+  d.onclick = e => { if (e.target === d) fecharLanc(); };
+  $('lDono').value = dono; prevSplit(); $('lNome').focus();
+}
+async function salvarLancamento() {
+  const { mid, orig } = S.edit, nome = $('lNome').value.trim(), valor = parseFloat($('lValor').value), dono = $('lDono').value;
+  const pct = dono.startsWith('ambos') ? parseFloat($('lPct').value) : 50;
+  if (!nome || isNaN(valor) || valor <= 0) return aviso('Preencha a descrição e o valor.');
+  if (isNaN(pct) || pct < 0 || pct > 100) return aviso('A porcentagem de quem pagou deve ficar entre 0 e 100.');
+  let linhas = [];
+  if (orig) {
+    linhas = montarLinhas(mid, orig.mes, nome, valor, dono, { criado_em: orig.criado_em, serie: orig.serie || null, parcela: orig.parcela || null, parcelas: orig.parcelas || null }, pct);
+  } else {
+    const n = Math.max(1, Math.min(36, parseInt($('lRep').value) || 1)), serie = n > 1 ? crypto.randomUUID() : null;
+    for (let i = 0; i < n; i++) {
+      const d = new Date(S.mes.ano, S.mes.mes + i, 1);
+      linhas.push(...montarLinhas(mid, mesKey(d.getFullYear(), d.getMonth()), nome, valor, dono, n > 1 ? { serie, parcela: i + 1, parcelas: n } : {}, pct));
+    }
+  }
+  const ins = await sb.from('lancamentos').insert(linhas).select('id');
+  if (ins.error) return aviso('Não foi possível salvar: ' + ins.error.message);
+  if (orig) {
+    const del = await (orig.grupo ? sb.from('lancamentos').delete().eq('grupo', orig.grupo) : sb.from('lancamentos').delete().eq('id', orig.id));
+    if (del.error) {
+      // não deixa o lançamento duplicado: desfaz a cópia nova e mantém o original
+      await sb.from('lancamentos').delete().in('id', (ins.data || []).map(x => x.id));
+      return aviso('Não foi possível alterar o lançamento. Nada foi mudado.');
+    }
+  }
+  fecharLanc(); rotear();
+}
+async function excluir(mid, id, grupo) {
+  if (!await confirmar(grupo ? 'Excluir este lançamento dividido? As duas partes serão removidas, só neste mês.' : 'Excluir este lançamento? Só neste mês.')) return;
+  const { error } = await (grupo ? sb.from('lancamentos').delete().eq('grupo', grupo) : sb.from('lancamentos').delete().eq('id', id));
+  if (error) aviso('Não foi possível excluir: ' + error.message);
+  rotear();
+}
+async function alternarPago(mid, valor) {
+  const { error } = await sb.from('meses_pagos').upsert({ modulo_id:mid, mes:chaveMes(), pago:valor });
+  if (error) return aviso('Não foi possível atualizar o pagamento: ' + error.message);
+  rotear();
+}
+
+// ============ VALENTINA (ela lança, o admin analisa e paga) ============
+const plural = (n, a, b) => `${n} ${n === 1 ? a : b}`;
+const ST = { pendente: ['Aguardando análise', 'st-p'], aprovado: ['Aprovado', 'st-a'], contestado: ['Contestado', 'st-c'] };
+const stDe = i => i.status || 'pendente';
+const somaV = l => l.reduce((a, i) => a + Number(i.valor), 0);
+async function telaValentina(m) {
+  $('titulo').textContent = ehAdmin() ? m.nome : 'Minhas despesas';
+  const chave = chaveMes();
+  const [l, p] = await Promise.all([
+    sb.from('lancamentos').select('*').eq('modulo_id', m.id).eq('mes', chave).order('criado_em'),
+    sb.from('meses_pagos').select('*').eq('modulo_id', m.id).eq('mes', chave).maybeSingle()
+  ]);
+  if (l.error) { $('conteudo').innerHTML = `<p class="vazio">Não foi possível carregar as despesas: ${esc(l.error.message)}</p>`; return; }
+  const itens = (l.data || []).slice().sort((a, b) => ['pendente', 'contestado', 'aprovado'].indexOf(stDe(a)) - ['pendente', 'contestado', 'aprovado'].indexOf(stDe(b)));
+  S.itens = itens;
+  const pago = !!p.data?.pago, editarMes = podeLancar(m.id) && (ehAdmin() || !pago);
+  const pend = itens.filter(i => stDe(i) === 'pendente'), apr = itens.filter(i => stDe(i) === 'aprovado'), con = itens.filter(i => stDe(i) === 'contestado');
+  const total = somaV(pend) + somaV(apr);
+  const podeMexer = i => editarMes && (ehAdmin() || stDe(i) !== 'aprovado');
+  const btn = (txt, acao, cls = '') => `<button class="btn ${cls}" style="padding:3px 10px;font-size:11px" onclick="event.stopPropagation();${acao}">${txt}</button>`;
+  const linha = i => {
+    const st = stDe(i), [rot, cls] = ST[st], mexe = podeMexer(i);
+    const detalhe = [i.data_compra ? fmtData(i.data_compra) : '', i.observacao ? esc(i.observacao) : ''].filter(Boolean).join('. ');
+    const acoes = ehAdmin() && !pago ? (st === 'aprovado' ? btn('Desfazer', `analisar('${i.id}','pendente')`, 'sec')
+      : btn('Aprovar', `analisar('${i.id}','aprovado')`) + (st === 'pendente' ? btn('Contestar', `contestar('${i.id}')`, 'sec') : '')) : '';
+    return `<div class="item ${mexe ? 'edt' : ''}" ${mexe ? `onclick="abrirDespesa('${m.id}','${i.id}')" title="Clique para editar"` : ''}>
+      <div>${esc(i.nome)}${detalhe ? `<small>${detalhe}</small>` : ''}${st === 'contestado' && i.motivo ? `<small class="motivo">Terence: ${esc(i.motivo)}</small>` : ''}</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+        <div style="display:flex;align-items:center;gap:8px">${brl(i.valor)}${mexe ? `<button class="x" onclick="event.stopPropagation();excluirDespesa('${i.id}')" title="Excluir">×</button>` : ''}</div>
+        <span class="st ${cls}">${rot}</span>${acoes ? `<div style="display:flex;gap:6px">${acoes}</div>` : ''}</div></div>`;
+  };
+  $('conteudo').innerHTML = `
+    <div class="topo">
+      <div class="meses"><button onclick="mudarMes(-1)">‹</button><strong>${MESES[S.mes.mes]}/${S.mes.ano}</strong><button onclick="mudarMes(1)">›</button>
+        <span class="pill ${pago ? 'pago' : 'aberto'}">${pago ? 'Pago' : 'Em aberto'}</span></div>
+      ${ehAdmin() ? `<button class="btn sec" onclick="pagarValentina('${m.id}',${!pago})">${pago ? 'Reabrir mês' : 'Confirmar pagamento'}</button>` : ''}
+    </div>
+    ${!editarMes && pago ? '<p class="vazio" style="margin-bottom:16px">Mês pago: as despesas ficam travadas.</p>' : ''}
+    <div class="col">
+      <div class="card"><h3><span>Resumo de ${MESES[S.mes.mes].toLowerCase()}</span></h3>
+        <div class="lin"><span>${ehAdmin() ? 'Total a pagar' : 'Total do mês'}</span><b style="font-size:20px">${brl(total)}</b></div>
+        <div class="lin"><span>Aprovado</span><b>${brl(somaV(apr))}</b></div>
+        <div class="lin"><span>Aguardando análise</span><b>${brl(somaV(pend))}</b></div>
+        <div class="lin"><span>Contestado, fora do total</span><b>${brl(somaV(con))}</b></div>
+        ${ehAdmin() && !pago && pend.length ? `<div style="margin-top:10px">${btn(`Aprovar as ${pend.length} em análise`, 'aprovarTodas()')}</div>` : ''}
+        ${!ehAdmin() && con.length ? `<small class="vazio">Há ${plural(con.length, 'despesa contestada', 'despesas contestadas')}. Clique para ajustar e reenviar.</small>` : ''}</div>
+      <div class="card"><h3>${ehAdmin() ? 'Despesas da Valentina' : 'Minhas despesas'}</h3>
+        ${itens.map(linha).join('') || '<p class="vazio">Nenhuma despesa neste mês. Use o botão no canto para lançar a primeira.</p>'}</div>
+    </div>
+    ${editarMes ? `<button class="fab" onclick="abrirDespesa('${m.id}')" title="Nova despesa">${ico('rocket', 26)}</button>` : ''}`;
+}
+function abrirDespesa(mid, id) {
+  const orig = id ? S.itens.find(i => i.id === id) : null;
+  const hj = new Date(), dataPad = (hj.getFullYear() === S.mes.ano && hj.getMonth() === S.mes.mes) ? iso(hj) : iso(new Date(S.mes.ano, S.mes.mes, 1));
+  S.desp = { mid, orig };
+  const d = document.createElement('div'); d.id = 'dlgDesp';
+  d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:100;padding:20px;overflow:auto';
+  d.innerHTML = `<div class="box" style="max-width:420px"><h3 style="font-size:17px">${orig ? 'Editar despesa' : 'Nova despesa em ' + MESES[S.mes.mes] + '/' + S.mes.ano}</h3>
+    ${orig && stDe(orig) === 'contestado' && orig.motivo ? `<p class="motivo-box">Terence contestou: ${esc(orig.motivo)}</p>` : ''}
+    <input id="dNome" placeholder="O que foi comprado" value="${esc(orig?.nome || '')}">
+    <input id="dValor" type="number" step="0.01" placeholder="Valor" value="${orig?.valor ?? ''}">
+    <label class="vazio">Data da compra<input id="dData" type="date" value="${orig?.data_compra || dataPad}" style="margin-top:6px"></label>
+    <input id="dObs" placeholder="Observação (opcional)" value="${esc(orig?.observacao || '')}">
+    <small class="vazio">${orig && stDe(orig) === 'contestado' && !ehAdmin() ? 'Ao salvar, a despesa volta para análise.' : ehAdmin() ? 'Lançada por você, entra como aprovada.' : 'Depois de lançada, o Terence analisa e aprova.'}</small>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="$('dlgDesp').remove()">Cancelar</button><button class="btn" onclick="salvarDespesa()">${orig ? 'Salvar' : 'Lançar'}</button></div></div>`;
+  document.body.appendChild(d);
+  d.onclick = e => { if (e.target === d) d.remove(); };
+  $('dNome').focus();
+}
+async function salvarDespesa() {
+  const { mid, orig } = S.desp, nome = $('dNome').value.trim(), valor = parseFloat($('dValor').value);
+  if (!nome || isNaN(valor) || valor <= 0) return aviso('Preencha o que foi comprado e o valor.');
+  const campos = { nome, valor, data_compra: $('dData').value || null, observacao: $('dObs').value.trim() || null };
+  const r = orig
+    ? await sb.from('lancamentos').update({ ...campos, status: ehAdmin() ? stDe(orig) : 'pendente', motivo: ehAdmin() ? (orig.motivo ?? null) : null }).eq('id', orig.id)
+    : await sb.from('lancamentos').insert({ ...campos, modulo_id: mid, mes: chaveMes(), dono: 'outro', status: ehAdmin() ? 'aprovado' : 'pendente' });
+  if (r.error) return aviso('Não foi possível salvar: ' + r.error.message);
+  $('dlgDesp')?.remove(); rotear();
+}
+async function excluirDespesa(id) {
+  if (!await confirmar('Excluir esta despesa?')) return;
+  const { error } = await sb.from('lancamentos').delete().eq('id', id);
+  if (error) aviso('Não foi possível excluir: ' + error.message);
+  rotear();
+}
+async function analisar(id, status) {
+  const { error } = await sb.from('lancamentos').update({ status, motivo: null }).eq('id', id);
+  if (error) aviso('Não foi possível atualizar: ' + error.message);
+  rotear();
+}
+function contestar(id) {
+  const d = document.createElement('div'); d.id = 'dlgMotivo';
+  d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:100;padding:20px';
+  d.innerHTML = `<div class="box" style="max-width:380px"><h3 style="font-size:17px">Contestar despesa</h3>
+    <input id="mTxt" placeholder="O que precisa ser ajustado? (ela vai ler)" onkeydown="if(event.key==='Enter')enviarContestacao('${id}')">
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="$('dlgMotivo').remove()">Cancelar</button><button class="btn" onclick="enviarContestacao('${id}')">Contestar</button></div></div>`;
+  document.body.appendChild(d);
+  d.onclick = e => { if (e.target === d) d.remove(); };
+  $('mTxt').focus();
+}
+async function enviarContestacao(id) {
+  const motivo = $('mTxt').value.trim();
+  if (!motivo) return aviso('Escreva o motivo para ela saber o que ajustar.');
+  const { error } = await sb.from('lancamentos').update({ status: 'contestado', motivo }).eq('id', id);
+  if (error) return aviso('Não foi possível contestar: ' + error.message);
+  $('dlgMotivo')?.remove(); rotear();
+}
+async function aprovarTodas() {
+  const { error } = await sb.from('lancamentos').update({ status: 'aprovado' }).eq('modulo_id', 'valentina').eq('mes', chaveMes()).eq('status', 'pendente');
+  if (error) aviso('Não foi possível aprovar: ' + error.message);
+  rotear();
+}
+async function pagarValentina(mid, pagar) {
+  if (pagar) {
+    const pend = S.itens.filter(i => stDe(i) === 'pendente'), con = S.itens.filter(i => stDe(i) === 'contestado');
+    const total = somaV(S.itens.filter(i => stDe(i) !== 'contestado'));
+    let msg = `Confirmar o pagamento de ${MESES[S.mes.mes]}/${S.mes.ano} no valor de ${brl(total)}? O mês fica travado para lançamentos.`;
+    if (pend.length) msg += ` ${plural(pend.length, 'despesa ainda sem análise será aprovada', 'despesas ainda sem análise serão aprovadas')}.`;
+    if (con.length) msg += ` ${plural(con.length, 'despesa contestada fica', 'despesas contestadas ficam')} fora do pagamento.`;
+    if (!await confirmar(msg, 'Confirmar pagamento')) return;
+    if (pend.length) {
+      const a = await sb.from('lancamentos').update({ status: 'aprovado' }).eq('modulo_id', mid).eq('mes', chaveMes()).eq('status', 'pendente');
+      if (a.error) return aviso('Não foi possível aprovar as pendentes: ' + a.error.message);
+    }
+  }
+  const { error } = await sb.from('meses_pagos').upsert({ modulo_id: mid, mes: chaveMes(), pago: pagar });
+  if (error) aviso('Não foi possível atualizar o pagamento: ' + error.message);
+  rotear();
+}
+
+// ============ CALENDÁRIO (só admin) ============
+const mes3c = d => MESES[d.getMonth()].slice(0, 3).toLowerCase();
+const hexRgba = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; };
+const addDias = (k, n) => { const d = new Date(k + 'T00:00:00'); d.setDate(d.getDate() + n); return iso(d); };
+const fimEv = e => e.data_fim || e.data;
+const diaTodo = e => !e.hora || fimEv(e) > e.data;
+const minutos = h => { const [a, b] = h.split(':').map(Number); return a * 60 + b; };
+const mais1h = h => { const m = Math.min(minutos(h) + 60, 23 * 60 + 59); return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; };
+const evNoDia = (evs, k) => evs.filter(e => e.data <= k && fimEv(e) >= k);
+const ordemEv = (a, b) => (diaTodo(b) - diaTodo(a)) || (a.hora || '').localeCompare(b.hora || '') || a.titulo.localeCompare(b.titulo);
+const catEv = id => (S.catsEv || []).find(x => x.id === id);
+const corEv = e => catEv(e.categoria_id)?.cor || (e.origem === 'google' ? '#4285f4' : '#7c8a80');
+const CAL_PX = 48;
+const TA_STYLE = 'width:100%;border:1px solid #cfd5ce;background:#fff;color:var(--txt);border-radius:12px;padding:11px 14px;font:inherit;resize:vertical';
+function calOcultasLer() { try { return new Set(JSON.parse(localStorage.getItem('calOcultas') || '[]')); } catch (e) { return new Set(); } }
+function calOcultasSalvar() { try { localStorage.setItem('calOcultas', JSON.stringify([...S.cal.ocultas])); } catch (e) {} }
+
+async function telaCalendario() {
+  $('titulo').textContent = 'Calendário';
+  const [ev, ct] = await Promise.all([
+    sb.from('eventos').select('*').order('hora'),
+    sb.from('evento_categorias').select('*').order('criado_em')
+  ]);
+  const erro = ev.error || ct.error;
+  if (erro) { $('conteudo').innerHTML = `<p class="vazio">Não foi possível carregar o calendário: ${esc(erro.message)}</p>`; return; }
+  S.catsEv = ct.data || []; S.eventos = ev.data || [];
+  S.cal ??= { vista: 'mes', ref: iso(new Date()), mini: null, ocultas: calOcultasLer() };
+  const c = S.cal, ref = new Date(c.ref + 'T00:00:00'), hojeK = iso(new Date());
+  const evs = S.eventos.filter(e => !e.oculto && !c.ocultas.has(e.categoria_id || 'sem'));
+  let titulo;
+  if (c.vista === 'mes') titulo = `${MESES[ref.getMonth()].toLowerCase()} de ${ref.getFullYear()}`;
+  else if (c.vista === 'dia') titulo = `${ref.getDate()} de ${MESES[ref.getMonth()].toLowerCase()} de ${ref.getFullYear()}`;
+  else {
+    const i = inicioSemana(ref), f = new Date(i); f.setDate(i.getDate() + 6);
+    titulo = i.getMonth() === f.getMonth() ? `${i.getDate()} – ${f.getDate()} de ${mes3c(f)}. de ${f.getFullYear()}` : `${i.getDate()} de ${mes3c(i)}. – ${f.getDate()} de ${mes3c(f)}. de ${f.getFullYear()}`;
+  }
+  const mini = c.mini || { ano: ref.getFullYear(), mes: ref.getMonth() };
+  const nDias = new Date(mini.ano, mini.mes + 1, 0).getDate();
+  const celulas = [...Array(new Date(mini.ano, mini.mes, 1).getDay()).fill(null), ...Array.from({ length: nDias }, (_, i) => i + 1)];
+  const miniHtml = `<div class="gc-mini"><div class="gc-minih"><b>${MESES[mini.mes]} ${mini.ano}</b><span><button onclick="calMini(-1)" title="Mês anterior">‹</button><button onclick="calMini(1)" title="Próximo mês">›</button></span></div>
+    <div class="cal">${DIAS.map(d => `<small>${d[0].toUpperCase()}</small>`).join('')}${celulas.map(n => {
+      if (!n) return '<i></i>';
+      const k = iso(new Date(mini.ano, mini.mes, n));
+      return `<button class="${k === hojeK ? 'hoje' : ''} ${k === c.ref ? 'sel' : ''}" onclick="calIr('${k}')">${n}${evNoDia(evs, k).length ? '<em></em>' : ''}</button>`;
+    }).join('')}</div></div>`;
+  const cats = [...S.catsEv.map(x => ({ id: x.id, nome: x.nome, cor: x.cor, edita: true })), { id: 'sem', nome: 'Sem categoria', cor: '#7c8a80', edita: false }];
+  const agHtml = cats.map(x => `<div class="gc-ag"><label><input type="checkbox" ${c.ocultas.has(x.id) ? '' : 'checked'} style="accent-color:${x.cor}" onchange="calToggle('${x.id}')">${esc(x.nome)}</label>${x.edita ? `<button class="x" onclick="dialogCategoria('${x.id}')" title="Editar categoria">✎</button>` : ''}</div>`).join('');
+  const corpo = c.vista === 'mes' ? calMesHtml(evs, ref)
+    : calGradeHtml(evs, c.vista === 'dia' ? [ref] : Array.from({ length: 7 }, (_, i) => { const d = inicioSemana(ref); d.setDate(d.getDate() + i); return d; }));
+  $('conteudo').innerHTML = `<div class="gc">
+    <aside class="gc-side"><button class="btn gc-criar" onclick="novoEventoHora()">+ Criar</button>${miniHtml}
+      <div><div class="gc-agt">Categorias</div>${agHtml}<button class="btn sec" style="padding:6px 14px;margin-top:8px" onclick="dialogCategoria()">+ Nova categoria</button></div></aside>
+    <section class="gc-main"><div class="gc-bar"><button class="btn sec" style="padding:7px 16px" onclick="calHoje()">Hoje</button>
+      <span class="meses"><button onclick="calNav(-1)" title="Anterior">‹</button><button onclick="calNav(1)" title="Próximo">›</button></span>
+      <h2>${titulo}</h2>
+      <div class="gc-seg">${[['dia', 'Dia'], ['semana', 'Semana'], ['mes', 'Mês']].map(([v, n]) => `<button class="${c.vista === v ? 'on' : ''}" onclick="calVista('${v}')">${n}</button>`).join('')}</div></div>
+      <div class="gc-wrap">${corpo}</div></section>
+    <button class="fab gc-fab" onclick="novoEventoHora()" title="Novo evento">${ico('cal', 26)}</button></div>`;
+  const tg = $('gcTg'); if (tg) tg.scrollTop = 7 * CAL_PX;
+}
+function chipMes(k) {
+  return e => {
+    const cor = corEv(e), td = diaTodo(e), tit = esc(e.titulo) + (e.origem === 'google' ? ` (Google: ${esc(e.agenda || '')})` : '');
+    return td ? `<button class="gc-ev" style="background:${cor};color:#fff" onclick="event.stopPropagation();abrirEvento('${e.id}')" title="${tit}">${k !== e.data ? '‹ ' : ''}${esc(e.titulo)}</button>`
+      : `<button class="gc-ev" onclick="event.stopPropagation();abrirEvento('${e.id}')" title="${tit}"><i style="background:${cor}"></i>${esc(e.hora)} ${esc(e.titulo)}</button>`;
+  };
+}
+function calMesHtml(evs, ref) {
+  const a = ref.getFullYear(), m = ref.getMonth(), hojeK = iso(new Date()), primeiro = new Date(a, m, 1);
+  const inicio = new Date(a, m, 1 - primeiro.getDay()), nSem = Math.ceil((primeiro.getDay() + new Date(a, m + 1, 0).getDate()) / 7);
+  let h = DIAS.map(x => `<div class="h">${x}</div>`).join('');
+  for (let i = 0; i < nSem * 7; i++) {
+    const dia = new Date(inicio); dia.setDate(inicio.getDate() + i);
+    const k = iso(dia), lista = evNoDia(evs, k).sort(ordemEv), resto = lista.length - 3;
+    h += `<div class="gc-cel ${dia.getMonth() !== m ? 'fora' : ''}" onclick="novoEventoEm('${k}')"><span class="gc-n ${k === hojeK ? 'hoje' : ''}">${dia.getDate() === 1 ? `${dia.getDate()} ${mes3c(dia)}` : dia.getDate()}</span>${lista.slice(0, 3).map(chipMes(k)).join('')}${resto > 0 ? `<button class="gc-mais" onclick="event.stopPropagation();calIr('${k}','dia')">+${resto} mais</button>` : ''}</div>`;
+  }
+  return `<div class="gc-mes">${h}</div>`;
+}
+function posicionar(lista) {
+  const it = lista.map(e => { const ini = minutos(e.hora); let fim = e.hora_fim ? minutos(e.hora_fim) : ini + 60; if (fim <= ini) fim = ini + 30; return { e, ini, fim: Math.max(fim, ini + 20) }; }).sort((a, b) => a.ini - b.ini || b.fim - a.fim);
+  const out = []; let grupo = [], fimGrupo = -1;
+  const fechar = () => { const nc = Math.max(...grupo.map(x => x.col)) + 1; grupo.forEach(x => { x.cols = nc; out.push(x); }); grupo = []; };
+  it.forEach(x => {
+    if (grupo.length && x.ini >= fimGrupo) { fechar(); fimGrupo = -1; }
+    const usadas = grupo.filter(y => y.fim > x.ini).map(y => y.col);
+    let c = 0; while (usadas.includes(c)) c++;
+    x.col = c; grupo.push(x); fimGrupo = Math.max(fimGrupo, x.fim);
+  });
+  if (grupo.length) fechar();
+  return out;
+}
+function calGradeHtml(evs, dias) {
+  const hojeK = iso(new Date()), ks = dias.map(iso), agora = new Date();
+  const topo = ks.map(k => { const d = new Date(k + 'T00:00:00'); return `<div class="gc-dh ${k === hojeK ? 'hoje' : ''}" onclick="calIr('${k}','dia')"><small>${DIAS[d.getDay()]}</small><b>${d.getDate()}</b></div>`; }).join('');
+  const dt = ks.map(k => `<div class="gc-dt" onclick="novoEventoEm('${k}')">${evNoDia(evs, k).filter(diaTodo).sort(ordemEv).map(chipMes(k)).join('')}</div>`).join('');
+  const horas = Array.from({ length: 24 }, (_, h) => `<div>${h ? String(h).padStart(2, '0') + ':00' : ''}</div>`).join('');
+  const cols = ks.map(k => {
+    const blocos = posicionar(evNoDia(evs, k).filter(e => !diaTodo(e))).map(({ e, ini, fim, col, cols }) => {
+      const cor = corEv(e);
+      return `<div class="gc-t" style="top:${ini / 60 * CAL_PX}px;height:${Math.max((fim - ini) / 60 * CAL_PX - 2, 18)}px;left:calc(${col} / ${cols} * 100% + 1px);width:calc(100% / ${cols} - 3px);background:${hexRgba(cor, .2)};border-color:${cor}" onclick="event.stopPropagation();abrirEvento('${e.id}')" title="${esc(e.titulo)}"><b>${esc(e.hora)}</b> ${esc(e.titulo)}</div>`;
+    }).join('');
+    const linha = k === hojeK ? `<div class="gc-agora" style="top:${(agora.getHours() * 60 + agora.getMinutes()) / 60 * CAL_PX}px"></div>` : '';
+    return `<div class="gc-col" onclick="clicarHora(event,'${k}')">${blocos}${linha}</div>`;
+  }).join('');
+  return `<div class="gc-grade" style="--n:${ks.length}"><div class="gc-hd"><div></div>${topo}</div><div class="gc-hd gc-ad"><div class="gc-lbl">dia todo</div>${dt}</div><div class="gc-tg" id="gcTg"><div class="gc-body"><div class="gc-horas">${horas}</div>${cols}</div></div></div>`;
+}
+function calNav(dir) {
+  const c = S.cal, d = new Date(c.ref + 'T00:00:00');
+  if (c.vista === 'mes') d.setMonth(d.getMonth() + dir, 1); else d.setDate(d.getDate() + (c.vista === 'semana' ? 7 : 1) * dir);
+  c.ref = iso(d); c.mini = null; telaCalendario();
+}
+function calHoje() { S.cal.ref = iso(new Date()); S.cal.mini = null; telaCalendario(); }
+function calVista(v) { S.cal.vista = v; telaCalendario(); }
+function calIr(k, vista) { S.cal.ref = k; if (vista) S.cal.vista = vista; S.cal.mini = null; telaCalendario(); }
+function calMini(d) {
+  const c = S.cal, r = new Date(c.ref + 'T00:00:00'), m = c.mini || { ano: r.getFullYear(), mes: r.getMonth() }, n = new Date(m.ano, m.mes + d, 1);
+  c.mini = { ano: n.getFullYear(), mes: n.getMonth() }; telaCalendario();
+}
+function calToggle(id) { const o = S.cal.ocultas; o.has(id) ? o.delete(id) : o.add(id); calOcultasSalvar(); telaCalendario(); }
+function clicarHora(ev, k) {
+  const r = ev.currentTarget.getBoundingClientRect(), h = Math.max(0, Math.min(23, Math.floor((ev.clientY - r.top) / CAL_PX)));
+  novoEventoEm(k, `${String(h).padStart(2, '0')}:00`);
+}
+function novoEventoEm(k, hora) { dialogEvento(null, { data: k, hora }); }
+function novoEventoHora() { const h = Math.min(new Date().getHours() + 1, 23); dialogEvento(null, { data: S.cal?.ref, hora: `${String(h).padStart(2, '0')}:00` }); }
+function abrirEvento(id) { const e = S.eventos.find(x => x.id === id); if (e) dialogEvento(e); }
+
+function modalCal(id, html, largura = 460) {
+  document.getElementById(id)?.remove();
+  const d = document.createElement('div'); d.id = id;
+  d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:100;padding:20px;overflow:auto';
+  d.innerHTML = `<div class="box" style="max-width:${largura}px;max-height:92vh;overflow:auto">${html}</div>`;
+  document.body.appendChild(d);
+  d.onclick = e => { if (e.target === d) d.remove(); };
+  return d;
+}
+function dialogEvento(orig, pre = {}) {
+  const cats = S.catsEv || [], externo = orig && orig.origem && orig.origem !== 'app';
+  const e = orig || { titulo: '', descricao: '', data: pre.data || iso(new Date()), data_fim: null, hora: pre.hora ?? null, hora_fim: pre.hora ? mais1h(pre.hora) : null, categoria_id: null };
+  S.evDlg = { orig };
+  if (externo) {
+    const quando = fimEv(e) > e.data ? `${fmtData(e.data)} a ${fmtData(fimEv(e))}` : fmtData(e.data);
+    modalCal('dlgEvento', `<h3 style="font-size:17px">${esc(e.titulo)}</h3>
+      <p>${quando}${e.hora ? `, ${esc(e.hora)}${e.hora_fim ? ' às ' + esc(e.hora_fim) : ''}` : ', dia todo'}</p>
+      ${e.descricao ? `<p class="vazio">${esc(e.descricao)}</p>` : ''}
+      <small class="vazio">Evento do Google Calendar${e.agenda ? ' (agenda: ' + esc(e.agenda) + ')' : ''}. Somente leitura aqui: para alterar, edite no Google.</small>
+      <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="$('dlgEvento').remove()">Fechar</button><button class="btn" onclick="ocultarEvento('${e.id}')">Ocultar do app</button></div>`);
+    return;
+  }
+  const todo = !e.hora;
+  modalCal('dlgEvento', `<h3 style="font-size:17px">${orig ? 'Editar evento' : 'Novo evento'}</h3>
+    <input id="evT" placeholder="Título" value="${esc(e.titulo)}">
+    <label class="vazio" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="evTodo" ${todo ? 'checked' : ''} onchange="evToggleTodo()"> Dia todo</label>
+    <div class="evrow"><label class="vazio">Início<input id="evD" type="date" value="${e.data}" onchange="evSyncFim()" style="margin-top:6px"></label><label id="evHBox" class="vazio ${todo ? 'hide' : ''}">Hora<input id="evH" type="time" value="${e.hora || ''}" style="margin-top:6px"></label></div>
+    <div class="evrow"><label class="vazio">Fim<input id="evDf" type="date" value="${fimEv(e)}" style="margin-top:6px"></label><label id="evHfBox" class="vazio ${todo ? 'hide' : ''}">Hora<input id="evHf" type="time" value="${e.hora_fim || ''}" style="margin-top:6px"></label></div>
+    <select id="evC"><option value="">Sem categoria</option>${cats.map(x => `<option value="${x.id}" ${x.id === e.categoria_id ? 'selected' : ''}>${esc(x.nome)}</option>`).join('')}</select>
+    <textarea id="evDesc" rows="3" placeholder="Descrição (opcional)" style="${TA_STYLE}">${esc(e.descricao || '')}</textarea>
+    ${orig ? `<small class="vazio">${orig.serie ? 'Faz parte de uma repetição. ' : ''}A alteração vale só para este evento.</small>`
+      : `<div class="evrow"><label class="vazio">Repetir<select id="evR" onchange="$('evNBox').classList.toggle('hide', this.value === 'nao')" style="margin-top:6px"><option value="nao">Não repete</option><option value="sem">Toda semana</option><option value="mes">Todo mês</option></select></label><label id="evNBox" class="vazio hide">Quantas vezes<input id="evN" type="number" min="2" max="60" value="4" style="margin-top:6px"></label></div>
+         <small class="vazio">Cada repetição vira um evento independente, que você pode editar ou excluir sozinho.</small>`}
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button class="btn sec" onclick="$('dlgEvento').remove()">Cancelar</button>${orig ? `<button class="btn sec" onclick="excluirEvento('${orig.id}')">Excluir</button>` : ''}<button class="btn" onclick="salvarEvento()">Salvar</button></div>`);
+  $('evT').focus();
+}
+function evToggleTodo() {
+  const todo = $('evTodo').checked;
+  $('evHBox').classList.toggle('hide', todo); $('evHfBox').classList.toggle('hide', todo);
+  if (!todo && !$('evH').value) { $('evH').value = '09:00'; $('evHf').value = '10:00'; }
+}
+function evSyncFim() { if ($('evDf').value < $('evD').value) $('evDf').value = $('evD').value; }
+function deslocarData(data, rep, i) {
+  if (rep === 'sem') return addDias(data, 7 * i);
+  const d = new Date(data + 'T00:00:00'), dia = d.getDate();
+  d.setDate(1); d.setMonth(d.getMonth() + i);
+  d.setDate(Math.min(dia, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()));
+  return iso(d);
+}
+async function salvarEvento() {
+  const { orig } = S.evDlg, titulo = $('evT').value.trim(), todo = $('evTodo').checked;
+  const data = $('evD').value, dataFim = $('evDf').value || data;
+  const hora = todo ? null : ($('evH').value || null), horaFim = todo ? null : ($('evHf').value || null);
+  if (!titulo) return aviso('Dê um título ao evento.');
+  if (!data) return aviso('Informe a data de início.');
+  if (dataFim < data) return aviso('O fim não pode ser antes do início.');
+  if (!todo && !hora) return aviso('Informe a hora de início ou marque "Dia todo".');
+  if (!todo && dataFim === data && horaFim && horaFim <= hora) return aviso('A hora de fim precisa ser depois da hora de início.');
+  const base = { titulo, descricao: $('evDesc').value.trim() || null, categoria_id: $('evC').value || null, hora, hora_fim: horaFim };
+  let r;
+  if (orig) r = await sb.from('eventos').update({ ...base, data, data_fim: dataFim > data ? dataFim : null }).eq('id', orig.id);
+  else {
+    const rep = $('evR').value, total = rep === 'nao' ? 1 : Math.max(2, Math.min(60, parseInt($('evN').value) || 2));
+    const serie = total > 1 ? crypto.randomUUID() : null, span = Math.round((new Date(dataFim + 'T00:00:00') - new Date(data + 'T00:00:00')) / 86400000);
+    r = await sb.from('eventos').insert(Array.from({ length: total }, (_, i) => {
+      const d0 = deslocarData(data, rep, i);
+      return { ...base, data: d0, data_fim: span > 0 ? addDias(d0, span) : null, serie, origem: 'app' };
+    }));
+  }
+  if (r.error) return aviso('Não foi possível salvar: ' + r.error.message);
+  S.cal.ref = data; S.cal.mini = null;
+  $('dlgEvento')?.remove(); telaCalendario();
+}
+async function excluirEvento(id) {
+  if (!await confirmar('Excluir este evento? Só este, as outras repetições não mudam.')) return;
+  const { error } = await sb.from('eventos').delete().eq('id', id);
+  if (error) return aviso('Não foi possível excluir: ' + error.message);
+  $('dlgEvento')?.remove(); telaCalendario();
+}
+async function ocultarEvento(id) {
+  const { error } = await sb.from('eventos').update({ oculto: true }).eq('id', id);
+  if (error) return aviso('Não foi possível ocultar: ' + error.message);
+  $('dlgEvento')?.remove(); aviso('Evento ocultado. Ele continua no Google.'); telaCalendario();
+}
+function dialogCategoria(id) {
+  const cat = id ? catEv(id) : null; S.catDlg = { id };
+  modalCal('dlgCat', `<h3 style="font-size:17px">${cat ? 'Editar categoria' : 'Nova categoria'}</h3>
+    <input id="catN" placeholder="Nome da categoria" value="${esc(cat?.nome || '')}" onkeydown="if(event.key==='Enter')salvarCategoriaEv()">
+    <label class="vazio">Cor<input id="catC" type="color" value="${cat?.cor || '#2f80ed'}" style="margin-top:6px;height:42px;padding:4px"></label>
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button class="btn sec" onclick="$('dlgCat').remove()">Cancelar</button>${cat ? '<button class="btn sec" onclick="excluirCategoriaEv()">Excluir</button>' : ''}<button class="btn" onclick="salvarCategoriaEv()">Salvar</button></div>`, 380);
+  $('catN').focus();
+}
+async function salvarCategoriaEv() {
+  const { id } = S.catDlg, nome = $('catN').value.trim(), cor = $('catC').value;
+  if (!nome) return aviso('Dê um nome à categoria.');
+  const r = id ? await sb.from('evento_categorias').update({ nome, cor }).eq('id', id) : await sb.from('evento_categorias').insert({ nome, cor });
+  if (r.error) return aviso('Não foi possível salvar: ' + r.error.message);
+  $('dlgCat')?.remove(); telaCalendario();
+}
+async function excluirCategoriaEv() {
+  const { id } = S.catDlg;
+  if (!await confirmar('Excluir esta categoria? Os eventos dela ficam sem categoria.')) return;
+  await sb.from('eventos').update({ categoria_id: null }).eq('categoria_id', id);
+  const { error } = await sb.from('evento_categorias').delete().eq('id', id);
+  if (error) return aviso('Não foi possível excluir: ' + error.message);
+  S.cal.ocultas.delete(id); calOcultasSalvar();
+  $('dlgCat')?.remove(); telaCalendario();
+}
+
+// ============ WORK (só admin) ============
+const rotuloMes = k => { const [a, m] = parseMes(k); return MESES[m].slice(0, 3).toLowerCase() + '/' + a; };
+const fmtData = s => s.split('-').reverse().join('/');
+const diasDesde = s => { const n = Math.floor((new Date(iso(new Date()) + 'T00:00:00') - new Date(s + 'T00:00:00')) / 86400000); return n <= 0 ? 'hoje' : n === 1 ? 'há 1 dia' : `há ${n} dias`; };
+async function telaWork() {
+  $('titulo').textContent = 'Work';
+  const chave = chaveMes();
+  const [e, o] = await Promise.all([
+    sb.from('freela_entradas').select('*').eq('mes', chave).order('criado_em'),
+    sb.from('orcamentos').select('*').eq('status', 'aberto').order('criado_em')
+  ]);
+  const ents = e.data || [], orcs = (o.data || []).filter(x => x.mes <= chave);
+  S.wEnt = ents; S.wOrc = orcs;
+  const soma = l => l.reduce((a, i) => a + Number(i.valor), 0), rec = soma(ents.filter(i => i.recebido));
+  $('conteudo').innerHTML = `
+    <div class="topo"><div class="meses"><button onclick="mudarMes(-1)">‹</button><strong>${MESES[S.mes.mes]}/${S.mes.ano}</strong><button onclick="mudarMes(1)">›</button></div></div>
+    <div class="col">
+      <div class="card"><h3>Entradas de freelas</h3>
+        ${ents.map(i => `<div class="item edt" onclick="abrirWork('ent','${i.id}')" title="Clique para editar"><div>${esc(i.cliente)}<small>${[i.descricao ? esc(i.descricao) : '', i.parcelas ? `Parcela ${i.parcela}/${i.parcelas}` : ''].filter(Boolean).join('. ')}</small>${i.responsavel || i.contato ? `<small>${[i.responsavel, i.contato].filter(Boolean).map(esc).join(', ')}</small>` : ''}${i.data_lancamento ? `<small>Orçamento enviado em ${fmtData(i.data_lancamento)}${i.aprovado_em ? `, aprovado em ${fmtData(i.aprovado_em)}` : ''}</small>` : ''}</div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><div style="display:flex;align-items:center;gap:8px">${brl(i.valor)}<input type="checkbox" ${i.recebido ? 'checked' : ''} onclick="event.stopPropagation();marcarRecebido('${i.id}',this.checked)" title="Marcar como recebido"><button class="x" onclick="event.stopPropagation();delWork('freela_entradas','${i.id}')" title="Excluir">×</button></div>${i.nota_fiscal ? '<span class="nf">NOTA FISCAL</span>' : ''}</div></div>`).join('') || '<p class="vazio">Nenhuma entrada neste mês.</p>'}
+        <div class="total"><span>Total do mês</span><span>${brl(soma(ents))}</span></div>
+        <div class="lin"><span>Recebido</span><b>${brl(rec)}</b></div><div class="lin"><span>A receber</span><b>${brl(soma(ents) - rec)}</b></div></div>
+      <div class="card" style="background:var(--tint)"><h3>Orçamentos em aberto</h3>
+        ${orcs.map(i => `<div class="item edt" onclick="abrirWork('orc','${i.id}')" title="Clique para editar"><div>${esc(i.cliente)}${i.descricao ? `<small>${esc(i.descricao)}</small>` : ''}${i.responsavel || i.contato ? `<small>${[i.responsavel, i.contato].filter(Boolean).map(esc).join(', ')}</small>` : ''}<small>${i.data_lancamento ? `Enviado em ${fmtData(i.data_lancamento)} (${diasDesde(i.data_lancamento)})` : `Aberto desde ${rotuloMes(i.mes)}`}${i.parcelas > 1 ? `. Previsto em ${i.parcelas}x` : ''}</small></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><div style="display:flex;align-items:center;gap:8px">${brl(i.valor)}<button class="btn" style="padding:4px 12px" onclick="event.stopPropagation();abrirWork('aprovar','${i.id}')">Aprovar</button><button class="x" onclick="event.stopPropagation();delWork('orcamentos','${i.id}')" title="Excluir">×</button></div>${i.nota_fiscal ? '<span class="nf">NOTA FISCAL</span>' : ''}</div></div>`).join('') || '<p class="vazio">Nenhum orçamento em aberto.</p>'}
+        <div class="total"><span>Em negociação</span><span>${brl(soma(orcs))}</span></div></div>
+    </div>
+    <button class="fab" onclick="abrirWork('novo')" title="Novo registro">${ico('work', 26)}</button>`;
+}
+function abrirWork(modo, id) {
+  const item = id ? (modo === 'ent' ? S.wEnt : S.wOrc).find(x => x.id === id) : null;
+  S.w = { modo, item };
+  const titulos = { novo: 'Novo registro', ent: 'Editar entrada', orc: 'Editar orçamento', aprovar: 'Aprovar orçamento' };
+  const d = document.createElement('div'); d.id = 'dlgWork';
+  d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:100;padding:20px;overflow:auto';
+  d.innerHTML = `<div class="box" style="max-width:420px"><h3 style="font-size:17px">${titulos[modo]}</h3>
+    ${modo === 'novo' ? `<select id="wTipo" onchange="wRef()"><option value="orc">Orçamento (fica em aberto até ser aprovado)</option><option value="ent">Entrada direta, sem orçamento</option></select>` : ''}
+    <input id="wCli" placeholder="Cliente" value="${esc(item?.cliente || '')}">
+    <input id="wDesc" placeholder="Descrição (opcional)" value="${esc(item?.descricao || '')}">
+    <input id="wVal" type="number" step="0.01" placeholder="Valor" value="${item?.valor ?? ''}" oninput="wRef()">
+    <div id="wParBox"><label class="vazio">Parcelas (meses)<input id="wPar" type="number" min="1" max="36" value="${item?.parcelas && modo !== 'ent' ? item.parcelas : 1}" oninput="wRef()" style="margin-top:6px"></label></div>
+    <div id="wOrcBox" style="display:flex;flex-direction:column;gap:12px"><input id="wResp" placeholder="Responsável (nome)" value="${esc(item?.responsavel || '')}"><input id="wCont" placeholder="Contato (e-mail, celular...)" value="${esc(item?.contato || '')}">
+      <label class="vazio">Data de lançamento<input id="wData" type="date" value="${item?.data_lancamento || iso(new Date())}" style="margin-top:6px"></label></div>
+    <label class="vazio" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="wNF" ${item?.nota_fiscal ? 'checked' : ''}> Nota fiscal</label>
+    <small id="wDica" class="vazio"></small>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="$('dlgWork').remove()">Cancelar</button><button class="btn" onclick="salvarWork()">${modo === 'aprovar' ? 'Aprovar' : modo === 'novo' ? 'Lançar' : 'Salvar'}</button></div></div>`;
+  document.body.appendChild(d);
+  d.onclick = e => { if (e.target === d) d.remove(); };
+  wRef(); $('wCli').focus();
+}
+function wRef() {
+  const modo = S.w.modo, tipo = $('wTipo')?.value, ehOrc = modo === 'orc' || (modo === 'novo' && tipo === 'orc');
+  $('wParBox').classList.toggle('hide', modo === 'ent');
+  const v = parseFloat($('wVal').value), n = Math.max(1, parseInt($('wPar').value) || 1), mes = `${MESES[S.mes.mes]}/${S.mes.ano}`;
+  const rateio = n > 1 && !isNaN(v) ? `${n}x de ${brl(v / n)}. ` : '';
+  $('wDica').textContent = modo === 'ent' ? 'A alteração vale só para este mês' + (S.w.item?.serie ? ', exceto responsável, contato e nota fiscal, que valem para todas as parcelas.' : '.')
+    : ehOrc ? rateio + 'Fica em aberto em todos os meses, a partir da data de lançamento, até ser aprovado. As parcelas podem ser alteradas a qualquer momento, inclusive na aprovação.'
+    : n > 1 && !isNaN(v) ? (modo === 'novo' ? 'Entra direto nas entradas, sem passar por orçamento. ' : '') + `${n}x de ${brl(v / n)}, de ${mes} em diante. Cada parcela fica independente e pode ser editada.` : (modo === 'novo' ? 'Entra direto nas entradas, sem passar por orçamento. ' : '') + `Entra só em ${mes}.`;
+}
+async function salvarWork() {
+  const { modo, item } = S.w, cliente = $('wCli').value.trim(), descricao = $('wDesc').value.trim(), valor = parseFloat($('wVal').value);
+  if (!cliente || isNaN(valor) || valor <= 0) return aviso('Preencha o cliente e o valor.');
+  const tipo = modo === 'novo' ? $('wTipo').value : modo === 'orc' ? 'orc' : 'ent';
+  const nPar = Math.max(1, Math.min(36, parseInt($('wPar').value) || 1)), dataL = $('wData').value || iso(new Date()), dd = new Date(dataL + 'T00:00:00');
+  const contatoCampos = { responsavel: $('wResp').value.trim(), contato: $('wCont').value.trim(), data_lancamento: dataL, nota_fiscal: $('wNF').checked };
+  const orcCampos = tipo === 'orc' ? { ...contatoCampos, parcelas: nPar, mes: mesKey(dd.getFullYear(), dd.getMonth()) } : {};
+  let r;
+  if (modo === 'ent') {
+    r = await sb.from('freela_entradas').update({ cliente, descricao, valor, ...contatoCampos }).eq('id', item.id);
+    if (!r.error && item.serie) await sb.from('freela_entradas').update({ responsavel: contatoCampos.responsavel, contato: contatoCampos.contato, nota_fiscal: contatoCampos.nota_fiscal }).eq('serie', item.serie);
+  }
+  else if (modo === 'orc') r = await sb.from('orcamentos').update({ cliente, descricao, valor, ...orcCampos }).eq('id', item.id);
+  else if (tipo === 'orc') r = await sb.from('orcamentos').insert({ cliente, descricao, valor, status: 'aberto', ...orcCampos });
+  else {
+    const n = nPar, c = Math.round(valor * 100), base = Math.floor(c / n), resto = c - base * n, serie = n > 1 ? crypto.randomUUID() : null;
+    const linhas = Array.from({ length: n }, (_, i) => {
+      const d = new Date(S.mes.ano, S.mes.mes + i, 1);
+      return { cliente, descricao, recebido: false, valor: (base + (i < resto ? 1 : 0)) / 100, mes: mesKey(d.getFullYear(), d.getMonth()), ...contatoCampos, ...(modo === 'aprovar' ? { aprovado_em: iso(new Date()) } : {}), ...(n > 1 ? { serie, parcela: i + 1, parcelas: n } : {}) };
+    });
+    r = await sb.from('freela_entradas').insert(linhas);
+    if (!r.error && modo === 'aprovar') r = await sb.from('orcamentos').update({ status: 'aprovado', parcelas: n, aprovado_em: iso(new Date()), ...contatoCampos }).eq('id', item.id);
+  }
+  if (r.error) return aviso('Não foi possível salvar: ' + r.error.message);
+  $('dlgWork')?.remove(); rotear();
+}
+async function marcarRecebido(id, v) { await sb.from('freela_entradas').update({ recebido: v }).eq('id', id); rotear(); }
+async function delWork(tabela, id) {
+  if (!await confirmar(tabela === 'orcamentos' ? 'Excluir este orçamento?' : 'Excluir esta entrada? Só neste mês.')) return;
+  await sb.from(tabela).delete().eq('id', id); rotear();
+}
+
+// ============ LINKS (só admin) ============
+const dominio = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return u; } };
+async function telaLinks() {
+  $('titulo').textContent = 'Links';
+  const [c, l] = await Promise.all([
+    sb.from('link_categorias').select('*').order('criado_em'),
+    sb.from('links').select('*').order('criado_em')
+  ]);
+  const cats = c.data || [], links = l.data || [], ids = new Set(cats.map(x => x.id));
+  S.linkCats = cats;
+  if (S.linkFiltro && !['todas', 'sem'].includes(S.linkFiltro) && !ids.has(S.linkFiltro)) S.linkFiltro = 'todas';
+  const filtro = S.linkFiltro || 'todas';
+  const semCat = i => !i.categoria_id || !ids.has(i.categoria_id);
+  const nomeCat = i => cats.find(x => x.id === i.categoria_id)?.nome || '';
+  const grupos = [...cats.map(x => ({ id: x.id, nome: x.nome, itens: links.filter(i => i.categoria_id === x.id) })), { id: 'sem', nome: 'Sem categoria', itens: links.filter(semCat) }]
+    .filter(g => filtro === 'todas' ? g.itens.length : g.id === filtro);
+  const chip = (id, nome) => `<span class="fch ${filtro === id ? 'on' : ''}"><button onclick="filtrarLinks('${id}')">${esc(nome)}</button></span>`;
+  $('conteudo').innerHTML = `
+    <div class="cores" style="margin-bottom:20px">${chip('todas', 'Todas')}${cats.map(x => chip(x.id, x.nome)).join('')}${links.some(semCat) ? chip('sem', 'Sem categoria') : ''}
+      ${ids.has(filtro) ? `<button class="btn sec" style="padding:6px 14px" onclick="delCategoria('${filtro}')">Excluir categoria</button>` : ''}</div>
+    <div class="grid">${grupos.map(g => `<div class="card"><h3>${esc(g.nome)}</h3>
+      ${g.itens.map(i => `<a class="item lk" href="${esc(i.url)}" target="_blank" rel="noopener noreferrer"><div>${esc(i.titulo)}<small>${esc(dominio(i.url))}</small></div><button class="x" onclick="event.preventDefault();event.stopPropagation();delLink('${i.id}')" title="Excluir link">×</button></a>`).join('') || '<p class="vazio">Nenhum link nesta categoria.</p>'}</div>`).join('') || '<p class="vazio">Nenhum link por aqui. Use o botão no canto para adicionar.</p>'}</div>
+    <button class="fab" onclick="abrirLink()" title="Novo link">${ico('links', 26)}</button>`;
+}
+function filtrarLinks(f) { S.linkFiltro = f; telaLinks(); }
+function abrirLink() {
+  const cats = S.linkCats || [], atual = cats.some(x => x.id === S.linkFiltro) ? S.linkFiltro : '';
+  const d = document.createElement('div'); d.id = 'dlgLink';
+  d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:100;padding:20px;overflow:auto';
+  d.innerHTML = `<div class="box" style="max-width:420px"><h3 style="font-size:17px">Novo link</h3>
+    <input id="kUrl" placeholder="Endereço do link" onkeydown="if(event.key==='Enter')salvarLink()">
+    <input id="kTitulo" placeholder="Título (opcional)" onkeydown="if(event.key==='Enter')salvarLink()">
+    <select id="kCat" onchange="$('kNova').classList.toggle('hide', this.value !== '__nova')"><option value="">Sem categoria</option>${cats.map(x => `<option value="${x.id}">${esc(x.nome)}</option>`).join('')}<option value="__nova">+ Nova categoria</option></select>
+    <input id="kNova" class="hide" placeholder="Nome da nova categoria">
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="$('dlgLink').remove()">Cancelar</button><button class="btn" onclick="salvarLink()">Salvar</button></div></div>`;
+  document.body.appendChild(d);
+  d.onclick = e => { if (e.target === d) d.remove(); };
+  $('kCat').value = atual; $('kUrl').focus();
+}
+async function salvarLink() {
+  let url = $('kUrl').value.trim(); if (!url) return aviso('Cole o endereço do link.');
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  let cat = $('kCat').value || null;
+  if (cat === '__nova') {
+    const nome = $('kNova').value.trim(); if (!nome) return aviso('Dê um nome para a nova categoria.');
+    const r = await sb.from('link_categorias').insert({ nome }).select().single();
+    if (r.error || !r.data) return aviso('Não foi possível criar a categoria.');
+    cat = r.data.id; S.linkFiltro = cat;
+  }
+  const { error } = await sb.from('links').insert({ titulo: $('kTitulo').value.trim() || dominio(url), url, categoria_id: cat });
+  if (error) return aviso('Não foi possível salvar: ' + error.message);
+  $('dlgLink')?.remove(); telaLinks();
+}
+async function delCategoria(id) {
+  if (!await confirmar('Excluir esta categoria? Os links dela ficam em Sem categoria.')) return;
+  await sb.from('link_categorias').delete().eq('id', id);
+  S.linkFiltro = 'todas'; telaLinks();
+}
+async function delLink(id) {
+  if (!await confirmar('Excluir este link?')) return;
+  await sb.from('links').delete().eq('id', id); telaLinks();
+}
+
+// ============ EXTRATO POR WHATSAPP (só admin) ============
+const normFone = v => { const d = String(v || '').replace(/\D/g, ''); return d && d.length <= 11 ? '55' + d : d; };
+function acertoNet(itens) {
+  const soma = l => l.reduce((a, i) => a + Number(i.valor), 0), g = itens.filter(i => i.grupo);
+  return Math.round((soma(g.filter(i => i.pago_por === 'terence' && i.dono === 'outro')) - soma(g.filter(i => i.pago_por === 'outro' && i.dono === 'terence'))) * 100) / 100;
+}
+function montarExtrato(m) {
+  const outro = m.nome.split('/')[1] || 'Outro', itens = S.itens || [], mes = `${MESES[S.mes.mes]}/${S.mes.ano}`;
+  const dela = itens.filter(i => i.dono === 'outro'), div = dela.filter(i => i.grupo), ind = dela.filter(i => !i.grupo);
+  const net = acertoNet(itens), pix = S.cfg?.pix;
+  let msg = `📋 *Extrato ${outro} — ${mes}* 📋\n\n`;
+  if (!div.length && !ind.length) msg += `Sem lançamentos no período.\n\n`;
+  if (div.length) {
+    msg += `*Despesas divididas*\n`;
+    div.forEach(i => {
+      const p = pctPag(i), q = Math.round((100 - p) * 100) / 100;
+      msg += `• ${i.nome} — total ${brl(i.valor_total)} (${p}/${q}, pago por ${i.pago_por === 'outro' ? 'você' : 'Terence'}). Sua parte: ${brl(i.valor)}\n`;
+    });
+    msg += `\n`;
+  }
+  if (ind.length) {
+    msg += `*Despesas individuais (não entram no acerto)*\n`;
+    ind.forEach(i => { msg += `• ${i.nome} — ${brl(i.valor)}\n`; });
+    msg += `\n`;
+  }
+  if (net > 0.005) msg += `💰 *Valor a transferir:* ${brl(net)}` + (pix ? `\n\nPIX: ${pix}` : '');
+  else if (net < -0.005) msg += `💰 *Terence transfere para você:* ${brl(-net)}`;
+  else msg += `✅ Estamos quites neste mês.`;
+  return msg;
+}
+function abrirExtrato(mid) {
+  const m = S.modulos.find(x => x.id === mid), outro = m.nome.split('/')[1] || 'Outro';
+  const fone = normFone(S.cfg?.['whatsapp_' + mid]), msg = montarExtrato(m);
+  const d = document.createElement('div'); d.id = 'dlgExtrato';
+  d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:100;padding:20px;overflow:auto';
+  d.innerHTML = `<div class="box" style="max-width:480px"><h3 style="font-size:17px">Extrato para ${esc(outro)}</h3>
+    <textarea id="exTxt" rows="14" style="width:100%;border:1px solid #cfd5ce;background:#fff;color:var(--txt);border-radius:12px;padding:12px 14px;font:inherit;line-height:1.45;resize:vertical" oninput="$('exLink').href='https://wa.me/${fone}?text='+encodeURIComponent(this.value)">${esc(msg)}</textarea>
+    ${fone ? '<small class="vazio">Você pode ajustar o texto antes de enviar.</small>' : `<small class="motivo">Cadastre o WhatsApp de ${esc(outro)} em Configurações para abrir direto na conversa dela.</small>`}
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button class="btn sec" onclick="$('dlgExtrato').remove()">Fechar</button><button class="btn sec" onclick="copiarExtrato()">Copiar</button>
+      <a class="btn" id="exLink" href="https://wa.me/${fone}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-block">Abrir no WhatsApp</a></div></div>`;
+  document.body.appendChild(d);
+  d.onclick = e => { if (e.target === d) d.remove(); };
+}
+async function copiarExtrato() {
+  const t = $('exTxt');
+  try { await navigator.clipboard.writeText(t.value); aviso('Extrato copiado.'); }
+  catch (e) { t.select(); aviso('Selecione e copie o texto.'); }
+}
+function blocoExtrato(cfg) {
+  const f = (id, rot, v) => `<label class="vazio">${rot}<input id="${id}" value="${esc(v || '')}" style="margin-top:6px"></label>`;
+  return `<div class="card" style="margin-top:20px"><h3>Extrato por WhatsApp</h3>
+    <p class="vazio" style="margin-bottom:14px">Usados no botão "Enviar extrato" dos módulos Eloá e Ana. No número, basta o DDD e o telefone: o código do país (55) entra sozinho.</p>
+    <div style="display:grid;gap:12px;max-width:420px">${f('cfPix', 'Chave Pix (aparece no extrato)', cfg.pix)}${f('cfElo', 'WhatsApp da Eloá', cfg.whatsapp_elo)}${f('cfAna', 'WhatsApp da Ana', cfg.whatsapp_ana)}
+    <div><button class="btn" onclick="salvarExtratoCfg()">Salvar</button></div></div></div>`;
+}
+async function salvarExtratoCfg() {
+  const linhas = [{ chave: 'pix', valor: $('cfPix').value.trim() }, { chave: 'whatsapp_elo', valor: normFone($('cfElo').value) }, { chave: 'whatsapp_ana', valor: normFone($('cfAna').value) }];
+  const { error } = await sb.from('config').upsert(linhas);
+  if (error) return aviso('Não foi possível salvar: ' + error.message);
+  aviso('Salvo.'); telaConfig();
+}
+
+// ============ CONFIGURAÇÕES (só admin) ============
+async function telaConfig() {
+  $('titulo').textContent = 'Configurações';
+  const [pf, mo, pe, cf] = await Promise.all([
+    sb.from('profiles').select('*').order('nome'),
+    sb.from('modulos').select('*').order('ordem'),
+    sb.from('permissoes').select('*'),
+    sb.from('config').select('*')
+  ]);
+  const cfg = Object.fromEntries((cf.data || []).map(x => [x.chave, x.valor]));
+  const idx = {}; (pe.data || []).forEach(x => idx[x.user_id + '|' + x.modulo_id] = x);
+  const pessoas = (pf.data || []).filter(p => !p.is_admin);
+  const mods = mo.data || [];
+  $('conteudo').innerHTML = `${blocoCores()}${blocoExtrato(cfg)}<div class="card" style="margin-top:20px">
+    <h3>Acessos por pessoa</h3>
+    <p class="vazio" style="margin-bottom:14px">Ver: a pessoa enxerga o módulo. Lançar: ela também cria e exclui lançamentos. A mudança vale na hora.</p>
+    ${pessoas.length ? `<div style="overflow-x:auto"><table><thead><tr><th>Pessoa</th>${mods.map(m => `<th>${esc(m.nome)}<br><small>ver / lançar</small></th>`).join('')}</tr></thead><tbody>
+    ${pessoas.map(p => `<tr><td>${esc(p.nome || p.email)}<br><small class="vazio">${esc(p.email)}</small></td>${mods.map(m => {
+      const x = idx[p.id + '|' + m.id] || {};
+      return `<td><input type="checkbox" ${x.pode_ver ? 'checked' : ''} onchange="salvarPerm('${p.id}','${m.id}','pode_ver',this.checked)">
+              <input type="checkbox" ${x.pode_lancar && x.pode_ver ? 'checked' : ''} ${x.pode_ver ? '' : 'disabled'} onchange="salvarPerm('${p.id}','${m.id}','pode_lancar',this.checked)"></td>`;
+    }).join('')}</tr>`).join('')}</tbody></table></div>`
+    : '<p class="vazio">Nenhuma pessoa cadastrada ainda. Convide por e-mail em Authentication > Users no Supabase e ela aparece aqui.</p>'}
+  </div>`;
+}
+async function salvarPerm(uid, mid, campo, valor) {
+  const { data } = await sb.from('permissoes').select('*').eq('user_id', uid).eq('modulo_id', mid).maybeSingle();
+  const novo = { user_id:uid, modulo_id:mid, pode_ver:data?.pode_ver || false, pode_lancar:data?.pode_lancar || false };
+  novo[campo] = valor;
+  if (campo === 'pode_ver' && !valor) novo.pode_lancar = false;
+  const { error } = await sb.from('permissoes').upsert(novo);
+  if (error) aviso('Não foi possível salvar: ' + error.message);
+  telaConfig();
+}
+
+if (SUPABASE_URL.includes('COLE_AQUI')) {
+  document.body.innerHTML = '<p style="padding:40px">Preencha SUPABASE_URL e SUPABASE_KEY no topo do script do index.html.</p>';
+} else boot();
+</script>
+</body>
+</html>
