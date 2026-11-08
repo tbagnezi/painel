@@ -64,6 +64,9 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .col{display:flex;flex-direction:column;gap:20px;min-width:0}.col .hero{margin-bottom:0}
 .mods{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .mod{cursor:pointer}.mod:hover{background:#fff}
+.fin-t{font-size:15px;font-weight:700;margin:4px 0 12px}
+.fin-g{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media(max-width:560px){.fin-g{grid-template-columns:1fr}}
 .lin{display:flex;justify-content:space-between;padding:6px 0;font-size:12.5px}
 .sem{display:grid;grid-template-columns:repeat(7,minmax(96px,1fr));gap:8px;overflow-x:auto}
 .dia{background:#fff;border-radius:16px;padding:10px;min-height:150px;cursor:pointer;display:flex;flex-direction:column;gap:6px;border:2px solid transparent}
@@ -109,7 +112,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .tit{min-width:0}
 .pill{white-space:nowrap;flex-shrink:0}
 .mods{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
-.sem{grid-template-columns:repeat(7,minmax(118px,1fr));gap:10px;padding-bottom:4px}
+.sem{grid-template-columns:repeat(7,minmax(104px,1fr));gap:8px;padding-bottom:4px}
 .dia{border-radius:12px;padding:12px;min-height:190px;min-width:0}
 .chip{border-radius:6px;padding:5px 8px;align-items:flex-start;min-width:0}
 .chip>span{min-width:0;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
@@ -163,7 +166,15 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .gc-col{position:relative;height:1152px;border-left:1px solid #d9ded8;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,#e6eae4 47px,#e6eae4 48px);cursor:pointer}
 .gc-t{position:absolute;border-radius:6px;border-left:3px solid;padding:2px 6px;font-size:11.5px;line-height:1.3;overflow:hidden;cursor:pointer;color:var(--txt)}
 .gc-agora{position:absolute;left:0;right:0;height:2px;background:#e5484d;z-index:3;pointer-events:none}
-.fab.gc-fab{display:none}
+.fab.gc-lupa{bottom:98px;width:48px;height:48px}
+.impl{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #e6eae4}
+.impl>div{flex:1;min-width:0}.impl b{font-size:13px;display:block}.impl small{display:block;color:var(--mut);font-size:11.5px}
+.impl.dup{opacity:.55}.impl input[type=checkbox]{width:18px;height:18px;flex-shrink:0;accent-color:var(--accent)}
+.impl button{border:0;background:none;cursor:pointer;color:var(--mut);font-size:15px;padding:4px 7px;border-radius:8px}
+.impl button:hover{background:rgba(0,0,0,.06);color:var(--txt)}
+.imped{display:grid;grid-template-columns:1fr 1fr 96px auto;gap:6px;align-items:center}.imped input{padding:8px 10px;font-size:13px;min-width:0}
+.impste{display:flex;gap:8px;font-size:12px;color:var(--mut)}.impste b{color:var(--txt)}
+@media(max-width:560px){.imped{grid-template-columns:1fr 1fr}}
 .bn-row{display:flex;flex-wrap:wrap;gap:10px}
 .bn{display:flex;align-items:center;gap:10px;border-radius:14px;padding:10px 12px;border-left:5px solid;flex:1 1 170px;max-width:270px;min-width:0}
 .bn>div{min-width:0}.bn b{font-size:13px;display:block}.bn small{display:block;color:var(--mut);font-size:11px}
@@ -173,7 +184,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
 .bnl i{width:12px;height:12px;border-radius:50%;flex-shrink:0}.bnl>div{flex:1;min-width:0}.bnl small{display:block;color:var(--mut);font-size:11px}
 .bnl button{border:0;background:none;cursor:pointer;font-size:12px;padding:4px 8px;border-radius:8px;color:var(--tintx)}
 .bnd{display:flex;gap:6px;flex-wrap:wrap}.bnd label{display:flex;align-items:center;gap:4px;font-size:12px;border:1px solid #cfd5ce;border-radius:20px;padding:5px 10px;cursor:pointer;background:#fff}
-@media(max-width:900px){.gc{grid-template-columns:1fr}.gc-side{display:none}.fab.gc-fab{display:grid}}
+@media(max-width:900px){.gc{grid-template-columns:1fr}.gc-side{display:none}}
 .evrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .soon{border:2px dashed #c3cac2;border-radius:28px;padding:24px;color:var(--mut)}
 </style>
@@ -268,6 +279,7 @@ const ICONS = {
   links: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/>',
   rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
   work: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+  lupa: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
   cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
   pasta: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'
 };
@@ -385,12 +397,13 @@ async function telaHome() {
   const h = S.home, hojeIso = iso(new Date());
   const mk = mesKey(new Date().getFullYear(), new Date().getMonth());
   const hojeK0 = iso(new Date());
-  const [ev, ta, lc, pg, bn, bd, bf] = await Promise.all([
+  const [ev, ta, lc, pg, bn, bd, bf, fr] = await Promise.all([
     sb.from('eventos').select('*').order('hora'),
     sb.from('tarefas').select('*').order('criado_em'),
     sb.from('lancamentos').select('*').eq('mes', mk),
     sb.from('meses_pagos').select('*').eq('mes', mk),
-    sb.from('banners').select('*'), sb.from('banner_datas').select('*'), sb.from('banner_feitos').select('*').eq('data', hojeK0)
+    sb.from('banners').select('*'), sb.from('banner_datas').select('*'), sb.from('banner_feitos').select('*').eq('data', hojeK0),
+    ehAdmin() ? sb.from('freela_entradas').select('*').eq('mes', mk) : Promise.resolve({ data: [] })
   ]);
   const hojeHtml = bnHojeHtml(bn.data || [], bd.data || [], bf.data || [], hojeK0);
   const eventos = ev.data || [], tarefas = ta.data || [], lancs = lc.data || [], pagos = pg.data || [];
@@ -413,7 +426,6 @@ async function telaHome() {
       const k = iso(new Date(mc.ano, mc.mes, n));
       return `<button class="${k === hojeIso ? 'hoje' : ''} ${k === h.sel ? 'sel' : ''}" onclick="selDia('${k}')">${n}${doDia(k).length ? '<em></em>' : ''}</button>`;
     }).join('')}</div>
-    <div class="addrow"><input id="eTitulo" placeholder="Novo evento em ${selD.getDate()} ${mes3(selD)}" onkeydown="if(event.key==='Enter')addEvento()"><input id="eHora" type="time" style="max-width:110px"><button class="btn" onclick="addEvento()" title="Adicionar evento">+</button></div>
     <h3 style="margin:20px 0 10px">Próximos eventos</h3>
     ${prox.map(e => { const d = new Date(e.data + 'T00:00:00'); return `<div class="item" style="cursor:pointer" onclick="selDia('${e.data}')"><div>${esc(e.titulo)}<small>${DIAS[d.getDay()]}, ${d.getDate()} ${mes3(d)}${e.hora ? ' às ' + esc(e.hora) : ''}</small></div></div>`; }).join('') || '<p class="vazio">Nenhum evento à frente.</p>'}</div>`;
 
@@ -432,6 +444,11 @@ async function telaHome() {
       <div class="lin"><span>${esc(outro)}</span><b>${brl(soma(m.id, 'outro'))}</b></div>
       <small class="vazio">${plural(n, 'lançamento', 'lançamentos')} em ${MESES[new Date().getMonth()].toLowerCase()}</small></div>`;
   }).join('');
+  const fre = fr.data || [], recebido = fre.filter(i => i.recebido).reduce((a, i) => a + Number(i.valor), 0), areceber = fre.filter(i => !i.recebido).reduce((a, i) => a + Number(i.valor), 0);
+  const workHtml = !ehAdmin() ? '' : `<div class="card mod" onclick="location.hash='#work'"><h3><span class="tit">${ico('work', 18)}Work</span><span class="pill ${fre.length && !areceber ? 'pago' : 'aberto'}">${!fre.length ? 'Sem entradas' : areceber ? 'A receber' : 'Tudo recebido'}</span></h3>
+      <div class="lin"><span>Recebido no mês</span><b style="color:var(--ok)">${brl(recebido)}</b></div>
+      <div class="lin"><span>A receber</span><b>${brl(areceber)}</b></div>
+      <small class="vazio">${plural(fre.length, 'entrada', 'entradas')} em ${MESES[new Date().getMonth()].toLowerCase()}</small></div>`;
 
   $('conteudo').innerHTML = `
     <div class="home">
@@ -440,15 +457,14 @@ async function telaHome() {
           <p>${longo(new Date())}. ${plural(nHoje, 'evento', 'eventos')} hoje e ${plural(tarefas.length, 'tarefa pendente', 'tarefas pendentes')}.</p></div>
         ${hojeHtml}
         <div class="card"><h3><span>Semana</span>
-          <span class="meses"><button onclick="semana(-1)" title="Semana anterior">‹</button><span style="font-size:12.5px;font-weight:600">${rotulo}</span><button onclick="semana(1)" title="Próxima semana">›</button>
-          <button class="btn sec" style="padding:6px 14px" onclick="semana(0)">Hoje</button></span></h3>
+          <span class="meses"><button onclick="semana(-1)" title="Semana anterior">‹</button><span style="font-size:12.5px;font-weight:600">${rotulo}</span><button onclick="semana(1)" title="Próxima semana">›</button></span></h3>
           <div class="sem">${dias.map(d => { const k = iso(d); return `<div class="dia ${k === hojeIso ? 'hoje' : ''} ${k === h.sel ? 'sel' : ''}" onclick="selDia('${k}')">
             <b>${DIAS[d.getDay()]}</b><span>${d.getDate()}</span>
             ${doDia(k).map(e => `<div class="chip"><span>${e.hora ? esc(e.hora) + ' ' : ''}${esc(e.titulo)}</span><button onclick="event.stopPropagation();delEvento('${e.id}')" title="Excluir evento">×</button></div>`).join('')}</div>`; }).join('')}</div></div>
-        <div class="grid mods">${modHtml}</div>
         <div class="card"><h3>Tarefas <button class="btn sec" style="padding:2px 12px;font-size:18px;line-height:1.2" onclick="toggleTarefa()" title="Nova tarefa">+</button></h3>
           <div id="tForm" class="addrow hide" style="margin:0 0 14px"><input id="tNova" placeholder="O que precisa ser feito?" onkeydown="if(event.key==='Enter')addTarefa();if(event.key==='Escape')toggleTarefa()"><button class="btn" onclick="addTarefa()">Adicionar</button></div>
           ${tarefas.map(t => `<div class="item"><div>${esc(t.texto)}</div><button class="x" onclick="delTarefa('${t.id}')" title="Concluir e excluir">×</button></div>`).join('') || '<p class="vazio">Nenhuma tarefa. Clique no + para adicionar.</p>'}</div>
+        <div class="fin"><h3 class="fin-t">Finanças de ${MESES[new Date().getMonth()].toLowerCase()}</h3><div class="grid fin-g">${modHtml}${workHtml}</div></div>
       </div>
       <div class="col dir">${calHtml}</div>
     </div>`;
@@ -600,7 +616,7 @@ async function telaModulo(m) {
     const tot = lista.reduce((a, i) => a + Number(i.valor), 0);
     return `<div class="card"><h3>Lançamentos ${esc(nome)}</h3>
       ${lista.map(i => {
-        const info = [i.grupo ? `Dividido ${pctPag(i)}/${Math.round((100 - pctPag(i)) * 100) / 100}, total ${brl(i.valor_total)}${i.pago_por ? ', pago por ' + (i.pago_por === 'terence' ? 'Terence' : esc(outro)) : ''}` : '', i.parcelas ? `Parcela ${i.parcela}/${i.parcelas}` : ''].filter(Boolean).join('. ');
+        const info = [i.grupo ? `Dividido ${pctPag(i)}/${Math.round((100 - pctPag(i)) * 100) / 100}, total ${brl(i.valor_total)}${i.pago_por ? ', pago por ' + (i.pago_por === 'terence' ? 'Terence' : esc(outro)) : ''}` : ''].filter(Boolean).join('. ');
         return `<div class="item ${editar ? 'edt' : ''}" data-id="${i.id}" ${editar ? `onclick="abrirLancamento('${m.id}','${i.id}')" title="Clique para editar"` : ''}><div style="display:flex;align-items:center;gap:8px;min-width:0">${editar ? '<span class="grip" title="Arraste para reordenar" onclick="event.stopPropagation()" onpointerdown="gripDown(event)">⋮⋮</span>' : ''}<div>${esc(i.nome)}${info ? `<small>${info}</small>` : ''}</div></div><div>${brl(i.valor)}${editar ? ` <button class="x" onclick="event.stopPropagation();excluir('${m.id}','${i.id}','${i.grupo || ''}')" title="Excluir">×</button>` : ''}</div></div>`;
       }).join('') || '<p class="vazio">Nenhum lançamento neste mês.</p>'}
       <div class="total"><span>Subtotal</span><span>${brl(tot)}</span></div></div>`;
@@ -911,6 +927,7 @@ async function telaCalendario() {
       <h2>${titulo}</h2>
       <div class="gc-seg">${[['dia', 'Dia'], ['semana', 'Semana'], ['mes', 'Mês']].map(([v, n]) => `<button class="${c.vista === v ? 'on' : ''}" onclick="calVista('${v}')">${n}</button>`).join('')}</div></div>
       <div class="gc-wrap">${corpo}</div></section>
+    <button class="fab gc-lupa" onclick="impAbrir()" title="Trazer eventos (colar lista ou arquivo .ics)">${ico('lupa', 24)}</button>
     <button class="fab gc-fab" onclick="novoEventoHora()" title="Novo evento">${ico('cal', 26)}</button></div>`;
   const tg = $('gcTg'); if (tg) tg.scrollTop = 7 * CAL_PX;
 }
@@ -980,6 +997,155 @@ function clicarHora(ev, k) {
 function novoEventoEm(k, hora) { dialogEvento(null, { data: k, hora }); }
 function novoEventoHora() { const h = Math.min(new Date().getHours() + 1, 23); dialogEvento(null, { data: S.cal?.ref, hora: `${String(h).padStart(2, '0')}:00` }); }
 function abrirEvento(id) { const e = S.eventos.find(x => x.id === id); if (e) dialogEvento(e); }
+
+// ============ IMPORTAR EVENTOS (lupa): colar texto ou arquivo .ics ============
+const impNorm = t => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const impHora = (h, m) => `${String(h).padStart(2, '0')}:${String(m || 0).padStart(2, '0')}`;
+const impMais = (h, n) => { const m = Math.min(minutos(h) + n * 60, 23 * 60 + 59); return impHora(Math.floor(m / 60), m % 60); };
+function impAno(d, m, a) {
+  if (a) return a < 100 ? 2000 + a : a;
+  const hoje = new Date(), cand = new Date(hoje.getFullYear(), m - 1, d);
+  return cand < new Date(hoje.getTime() - 30 * 86400000) ? hoje.getFullYear() + 1 : hoje.getFullYear();
+}
+function parseTexto(txt) {
+  const SEMANA = /\b(domingo|segunda(?:-feira)?|ter[cç]a(?:-feira)?|quarta(?:-feira)?|quinta(?:-feira)?|sexta(?:-feira)?|s[aá]bado|dom|seg|ter|qua|qui|sex|s[aá]b)\b\.?,?/gi;
+  const RD = /(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/, RE = /(\d{1,2})\s+de\s+([a-zç]+)(?:\s+de\s+(\d{4}))?/i, RH = /(?<![\d/])(\d{1,2})(?:[:h](\d{2})?)(?![\d/])/;
+  const MN = MESES.map(impNorm), out = [], linhas = String(txt).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const dataDe = l => { let m = l.match(RD); if (m) return { d: +m[1], m: +m[2], a: m[3] ? +m[3] : null, tx: m[0] };
+    m = l.match(RE); if (m) { const i = MN.indexOf(impNorm(m[2])); if (i >= 0) return { d: +m[1], m: i + 1, a: m[3] ? +m[3] : null, tx: m[0] }; } return null; };
+  for (let i = 0; i < linhas.length; i++) {
+    const dt = dataDe(linhas[i]); if (!dt || dt.d < 1 || dt.d > 31 || dt.m < 1 || dt.m > 12) continue;
+    let resto = linhas[i].replace(dt.tx, ' '), extra = 0;
+    const semTitulo = s => s.replace(SEMANA, ' ').replace(RH, ' ').replace(/[\s\-–—|•·,:;()àa]+/gi, '').length < 2;
+    // data numa linha e o jogo nas seguintes (até a próxima data)
+    while (semTitulo(resto) && i + 1 + extra < linhas.length && !dataDe(linhas[i + 1 + extra]) && extra < 2) { resto += ' ' + linhas[i + 1 + extra]; extra++; }
+    if (!resto.match(RH) && i + 1 + extra < linhas.length && /^(?:[àa]s\s*)?\d{1,2}(?:[:h]\d{2})?\s*h?$/i.test(linhas[i + 1 + extra]) && !dataDe(linhas[i + 1 + extra])) { resto += ' ' + linhas[i + 1 + extra].replace(/^[àa]s\s*/i, ''); extra++; }
+    i += extra;
+    let hora = null; const mh = resto.match(RH);
+    if (mh && +mh[1] <= 23 && (mh[2] === undefined || +mh[2] <= 59)) { hora = impHora(+mh[1], mh[2]); resto = resto.replace(mh[0], ' '); }
+    resto = resto.replace(SEMANA, ' ');
+    if (hora) resto = resto.replace(/(^|\s)[àa]s(\s|$)/gi, ' ');
+    let local = null; const ml = resto.match(/\(([^)]+)\)\s*$/); if (ml) { local = ml[1].trim(); resto = resto.replace(ml[0], ' '); }
+    const titulo = resto.replace(/\s+/g, ' ').replace(/^[\s\-–—|•·,:;]+|[\s\-–—|•·,:;]+$/g, '').trim();
+    if (!titulo) continue;
+    const ano = impAno(dt.d, dt.m, dt.a), data = iso(new Date(ano, dt.m - 1, dt.d));
+    out.push({ titulo, data, hora, hora_fim: hora ? impMais(hora, 2) : null, local });
+  }
+  return out;
+}
+function parseIcs(txt) {
+  const linhas = String(txt).replace(/\r/g, '').replace(/\n[ \t]/g, '').split('\n'), out = [];
+  let ev = null;
+  const dtv = (chave, val) => {
+    const m = val.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?$/); if (!m) return null;
+    if (m[4] === undefined) return { data: `${m[1]}-${m[2]}-${m[3]}`, hora: null };
+    if (m[7]) { const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5])); return { data: iso(d), hora: impHora(d.getHours(), d.getMinutes()) }; }
+    return { data: `${m[1]}-${m[2]}-${m[3]}`, hora: impHora(+m[4], +m[5]) };
+  };
+  const limpa = v => v.replace(/\\n/gi, ' ').replace(/\\([,;\\])/g, '$1').trim();
+  linhas.forEach(l => {
+    if (l === 'BEGIN:VEVENT') { ev = {}; return; }
+    if (l === 'END:VEVENT') {
+      if (ev && ev.titulo && ev.ini) {
+        const fimDia = ev.fim && !ev.ini.hora ? iso(new Date(new Date(ev.fim.data + 'T00:00:00').getTime() - 86400000)) : null;
+        out.push({ titulo: ev.titulo, data: ev.ini.data, data_fim: fimDia && fimDia > ev.ini.data ? fimDia : null, hora: ev.ini.hora,
+          hora_fim: ev.ini.hora ? (ev.fim && ev.fim.data === ev.ini.data && ev.fim.hora && ev.fim.hora > ev.ini.hora ? ev.fim.hora : impMais(ev.ini.hora, 2)) : null, local: ev.local || null });
+      }
+      ev = null; return;
+    }
+    if (!ev) return;
+    const k = l.indexOf(':'); if (k < 0) return;
+    const nome = l.slice(0, k).split(';')[0].toUpperCase(), val = l.slice(k + 1);
+    if (nome === 'SUMMARY') ev.titulo = limpa(val);
+    else if (nome === 'LOCATION') ev.local = limpa(val);
+    else if (nome === 'DTSTART') ev.ini = dtv(nome, val.trim());
+    else if (nome === 'DTEND') ev.fim = dtv(nome, val.trim());
+  });
+  return out;
+}
+const IMP_EXEMPLO = `Dom 15/11/2026 16:00 Grêmio x Juventude (Arena do Grêmio)
+Qua, 18/11 às 19h30 - Caxias x Grêmio
+22/11 - 18h - Grêmio x Internacional
+Sáb 28/11 20:00 Pelotas x Grêmio
+05 de dezembro
+Grêmio x Novo Hamburgo
+16h`;
+function impAbrir() {
+  S.imp = { passo: 1, texto: '', itens: [], edit: null, cat: '', aviso: '' };
+  modalCal('dlgImp', '', 600); impRender();
+}
+function impRender() {
+  const c = S.imp, box = document.querySelector('#dlgImp .box'); if (!box) return;
+  const cab = `<h3 style="font-size:17px">Trazer eventos para o calendário</h3><div class="impste"><span>${c.passo === 1 ? '<b>1 Trazer</b>' : '1 Trazer'}</span><span>›</span><span>${c.passo === 2 ? '<b>2 Conferir e confirmar</b>' : '2 Conferir e confirmar'}</span></div>`;
+  if (c.passo === 1) {
+    box.innerHTML = `${cab}
+      <label class="vazio">Cole aqui a lista de jogos ou eventos (uma linha por evento, com data e hora)
+        <textarea id="impTx" rows="8" placeholder="Ex.: Dom 15/11 16:00 Grêmio x Juventude (Arena do Grêmio)" style="${TA_STYLE};margin-top:6px">${esc(c.texto)}</textarea></label>
+      ${c.aviso ? `<small class="motivo">${esc(c.aviso)}</small>` : ''}
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="vazio">ou envie um arquivo de calendário:</span>
+        <label class="btn sec" style="padding:7px 16px;cursor:pointer">Escolher arquivo .ics<input type="file" id="impArq" accept=".ics,text/calendar" class="hide" onchange="impArquivo(this)"></label>
+        <button class="btn sec" style="padding:7px 16px" onclick="impExemplo()">Usar exemplo</button></div>
+      <small class="vazio">Dica: peça ao Claude no chat, por exemplo "ache os jogos do Grêmio no Gaúcho 2026 com data e hora", e cole a resposta aqui. Você confere tudo no próximo passo antes de entrar no calendário.</small>
+      <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn sec" onclick="$('dlgImp').remove()">Cancelar</button><button class="btn" onclick="impLer()">Continuar</button></div>`;
+    return;
+  }
+  const marc = c.itens.filter(x => x.marcado), todosMarc = c.itens.length && c.itens.every(x => x.marcado || x.dup);
+  const linha = x => {
+    if (c.edit === x.id) return `<div class="impl"><div class="imped"><input id="ieT" value="${esc(x.titulo)}" placeholder="Nome"><input id="ieD" type="date" value="${x.data}"><input id="ieH" type="time" value="${x.hora || ''}"><span><button onclick="impSalvarEdicao('${x.id}')" title="Salvar">✓</button><button onclick="impEditar(null)" title="Cancelar">↩</button></span></div></div>`;
+    const d = new Date(x.data + 'T00:00:00');
+    return `<div class="impl ${x.dup ? 'dup' : ''}"><input type="checkbox" ${x.marcado ? 'checked' : ''} onchange="impToggle('${x.id}')"><div><b>${esc(x.titulo)}</b><small>${DIAS[d.getDay()]}, ${d.getDate()} ${mes3c(d)} ${d.getFullYear()} · ${x.hora ? esc(x.hora) : 'dia todo'}${x.local ? ' · ' + esc(x.local) : ''}${x.dup ? ' · já está no calendário' : ''}</small></div><button onclick="impEditar('${x.id}')" title="Editar nome e horário">✎</button><button onclick="impRemover('${x.id}')" title="Tirar da lista">✕</button></div>`;
+  };
+  box.innerHTML = `${cab}
+    ${c.itens.length ? `<label class="vazio" style="display:flex;align-items:center;gap:8px"><input type="checkbox" ${todosMarc ? 'checked' : ''} onchange="impTodos(this.checked)" style="accent-color:var(--accent)"> Selecionar todos <b style="margin-left:auto">${marc.length} de ${c.itens.length} marcados</b></label>
+      <div style="max-height:340px;overflow:auto">${c.itens.map(linha).join('')}</div>
+      <select id="impCat" onchange="S.imp.cat=this.value"><option value="">Sem categoria</option>${(S.catsEv || []).map(x => `<option value="${x.id}" ${x.id === c.cat ? 'selected' : ''}>${esc(x.nome)}</option>`).join('')}</select>`
+      : '<p class="vazio">A lista ficou vazia.</p>'}
+    <div style="display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap"><button class="btn sec" onclick="S.imp.passo=1;impRender()">‹ Voltar</button>
+      <button class="btn" ${marc.length ? '' : 'disabled style="opacity:.5"'} onclick="impConfirmar()">Adicionar ${marc.length} ao calendário</button></div>`;
+}
+function impIrPasso2(lista) {
+  const c = S.imp;
+  c.itens = lista.sort((a, b) => (a.data + (a.hora || '')).localeCompare(b.data + (b.hora || ''))).map((x, i) => {
+    const dup = (S.eventos || []).some(e => e.data === x.data && (e.hora || '') === (x.hora || '') && e.titulo.trim().toLowerCase() === x.titulo.trim().toLowerCase());
+    return { ...x, id: 'i' + i, dup, marcado: !dup };
+  });
+  c.passo = 2; c.edit = null; impRender();
+}
+function impLer() {
+  const c = S.imp; c.texto = $('impTx').value;
+  const lista = parseTexto(c.texto);
+  if (!lista.length) { c.aviso = 'Não encontrei nenhum evento com data nesse texto. Cada linha precisa ter pelo menos a data, como 15/11 ou 15 de novembro.'; impRender(); return; }
+  c.aviso = ''; impIrPasso2(lista);
+}
+function impArquivo(inp) {
+  const f = inp.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const lista = parseIcs(r.result);
+    if (!lista.length) { S.imp.aviso = 'Não encontrei eventos nesse arquivo.'; S.imp.texto = $('impTx')?.value || ''; impRender(); return; }
+    impIrPasso2(lista);
+  };
+  r.readAsText(f);
+}
+function impExemplo() { S.imp.texto = IMP_EXEMPLO; S.imp.aviso = ''; impRender(); }
+function impToggle(id) { const x = S.imp.itens.find(i => i.id === id); x.marcado = !x.marcado; impRender(); }
+function impTodos(v) { S.imp.itens.forEach(x => { x.marcado = v; }); impRender(); }
+function impRemover(id) { S.imp.itens = S.imp.itens.filter(x => x.id !== id); impRender(); }
+function impEditar(id) { S.imp.edit = id; impRender(); if (id) $('ieT')?.focus(); }
+function impSalvarEdicao(id) {
+  const x = S.imp.itens.find(i => i.id === id), t = $('ieT').value.trim(), d = $('ieD').value, h = $('ieH').value || null;
+  if (!t || !d) return aviso('Informe o nome e a data.');
+  Object.assign(x, { titulo: t, data: d, hora: h, hora_fim: h ? impMais(h, 2) : null, data_fim: null });
+  S.imp.edit = null; impRender();
+}
+async function impConfirmar() {
+  const c = S.imp, sel = c.itens.filter(x => x.marcado); if (!sel.length) return;
+  const linhas = sel.map(x => ({ titulo: x.titulo, descricao: x.local ? 'Local: ' + x.local : null, data: x.data, data_fim: x.data_fim || null, hora: x.hora, hora_fim: x.hora_fim, categoria_id: c.cat || null, origem: 'app' }));
+  const { error } = await sb.from('eventos').insert(linhas);
+  if (error) return aviso('Não foi possível adicionar: ' + error.message);
+  S.cal.ref = sel[0].data; S.cal.mini = null;
+  $('dlgImp')?.remove(); aviso(`${sel.length} ${sel.length === 1 ? 'evento adicionado' : 'eventos adicionados'} ao calendário.`); telaCalendario();
+}
 
 function modalCal(id, html, largura = 460) {
   document.getElementById(id)?.remove();
